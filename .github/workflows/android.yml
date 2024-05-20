@@ -21,10 +21,10 @@ jobs:
         cache: gradle
 
     - name: Navigate to project directory
-      run: cd Window\AndroidApp\car-api-hello-world
+      run: cd Window/AndroidApp/car-api-hello-world
 
     - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      run: cd Window/AndroidApp/car-api-hello-world && chmod +x gradlew
 
     - name: Build with Gradle
       run: ./gradlew build
