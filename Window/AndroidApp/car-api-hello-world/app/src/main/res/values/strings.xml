@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">VHAL Viewer</string>
+    <string name="current_gear_unknown">Current Gear: UNKNOWN</string>
+    <string name="reverse">Reverse</string>
+    <string name="neutral">Neutral</string>
+    <string name="park">Park</string>
+    <string name="drive">Drive</string>
+    <string name="image_change">Image Change</string>
+    <string name="p">P</string>
+    <string name="r">R</string>
+    <string name="n">N</string>
+    <string name="d">D</string>
+    <string name="auto">Auto Parking</string>
+    <string name="lock">LOCK</string>
+    <string name="off">OFF</string>
+    <string name="acc">ACC</string>
+    <string name="on">ON</string>
+    <string name="start">START</string>
+</resources>

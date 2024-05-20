@@ -1,0 +1,28 @@
+1. sudo apt-get install can-utils
+    1. SocketCAN관련 패키지
+2. sudo modprobe vcan
+    1. vcan load
+3. sudo ip link add dev vcan0 type vcan
+    1. vcan type의 vcan0라는 이름의 dev를 add
+4. sudo ip link set up vcan0
+    1. vacn0 Running 활성화
+5. sudo modprobe dummy
+    1. dummy 커널 모듈 로드
+6. sudo ip link add dev veth0 type dummy
+    1. dummy type의 veth0이라는 이름의 dev를 add
+7. sudo ip link set dev veth0 up
+    1. veth0 Running 활성화
+    
+#===========================#
+# Linux 환경              #
+    1. 터미널1에서 sudo python3 test.py(예시)
+2. 터미널2에서 cansend vcan0 123#DEADBEEF 
+    1. 123 = CAN ID, DEADBEEF = Data
+3. dump할 시 명령어
+    1. 새 터미널에서 candump vcan0 혹은 sudo tcpdump -i veth0
+    
+    
+    
+    
+    
+

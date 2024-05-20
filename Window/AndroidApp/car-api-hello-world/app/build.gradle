@@ -1,0 +1,68 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.example.carapihelloworld'
+    compileSdk 34
+
+
+    defaultConfig {
+        applicationId "com.example.carapihelloworld"
+        minSdk 32
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+
+
+//        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        debugSignCfg {
+            storeFile file("AospDemo.jks")
+            storePassword "aosp-demo"
+            keyAlias "aosp-demo"
+            keyPassword "aosp-demo"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.debugSignCfg
+
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-DEBUG'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    useLibrary 'android.car'
+}
+
+dependencies {
+
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation files('libs/vendor.nlab.vehicle-V1.0-java.jar')
+
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
+    // For testing
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}
