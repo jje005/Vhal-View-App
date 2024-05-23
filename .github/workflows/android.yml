@@ -24,7 +24,7 @@ jobs:
       run: chmod +x Window/AndroidApp/car-api-hello-world/gradlew
 
     - name: Build with Gradle
-      run: ./Window/AndroidApp/car-api-hello-world/gradlew build
+      run: cd Window/AndroidApp/car-api-hello-world && ./gradlew build
 
       
 # name: Android CI
