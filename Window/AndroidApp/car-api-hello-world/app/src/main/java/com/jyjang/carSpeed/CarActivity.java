@@ -1,6 +1,7 @@
 package com.jyjang.carSpeed;
 
 import android.Manifest;
+import android.animation.ValueAnimator;
 import android.car.Car;
 import android.car.VehiclePropertyIds;
 import android.car.hardware.CarPropertyConfig;
@@ -56,7 +57,7 @@ public class CarActivity extends AppCompatActivity {
         List<String> dangPermToRequest = checkDangerousPermissions();
         requestDangerousPermissions(dangPermToRequest);
         setContentView(R.layout.car_action_activity);
-        main();
+
 
         chargePortOpenImage = findViewById(R.id.charge_port_open_image);
         chargePortConnectImage = findViewById(R.id.charge_port_connect_image);
@@ -69,6 +70,8 @@ public class CarActivity extends AppCompatActivity {
 
         speedTextView = findViewById(R.id.speed_text_view);
         ignitionTextView = findViewById(R.id.ignition_state_text);
+
+        main();
     }
 
     private List<String> checkDangerousPermissions() {
@@ -272,9 +275,28 @@ public class CarActivity extends AppCompatActivity {
         }
     }
 
-    public void setCarSpeedValue(TextView textView, float value){
-        int integerValue = (int) value;
-        textView.setText(String.valueOf(integerValue));
+    public void setCarSpeedValue(TextView textView, float newValue) {
+        String currentSpeedText = textView.getText().toString();
+        int currentSpeed;
+
+        try {
+            currentSpeed = Integer.parseInt(currentSpeedText);
+        } catch (NumberFormatException e) {
+            currentSpeed = 0;
+        }
+
+        int newSpeed = (int) newValue;
+
+        ValueAnimator animator = ValueAnimator.ofInt(currentSpeed, newSpeed);
+        animator.setDuration(700);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int animatedValue = (int) animation.getAnimatedValue();
+                textView.setText(String.valueOf(animatedValue));
+            }
+        });
+        animator.start();
     }
 
     public void setIgnitionState(TextView textView, int value){
