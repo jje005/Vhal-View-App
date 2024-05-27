@@ -1,8 +1,8 @@
 # VehiclePropValueList.py
 
 import sys
-sys.path.append(r'D:\00.Project\SDV\SDVPRJ\-SDV\PythonAdb\model\vehiclePropValue')
 
+sys.path.append(r'D:\00.Project\SDV\SDVPRJ\-SDV\PythonAdb\model\vehiclePropValue')
 
 
 class Vehiclepropvaluelist:
@@ -22,7 +22,7 @@ class Vehiclepropvaluelist:
             self.vehiclePropValues.remove(vehicle_prop_value)
         else:
             print("VehiclePropValue not found in the list.")
-    
+
     def getVehiclePropValue(self, area_id):
         for vehiclePropValue in self.vehiclePropValues:
             if vehiclePropValue.getAreaId() == area_id:
@@ -35,4 +35,3 @@ class Vehiclepropvaluelist:
 
     def get_properties_id(self):
         return self.propertiesId
-    
