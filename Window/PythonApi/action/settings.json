@@ -1,6 +1,0 @@
-{
-    "python.analysis.extraPaths": [
-        "./api/model/vehiclePropValue/VehiclePropValue.py",
-        "./api/model/vehiclePropValue"
-    ]
-}
