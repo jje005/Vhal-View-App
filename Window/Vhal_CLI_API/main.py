@@ -1,68 +1,72 @@
-import argparse
 import datetime
+import os
 import subprocess
+import sys
+import asyncio
 
 import can.interface
 
-from Window.Vhal_CLI_API.VhalCommand import setVHAL
+from vcan.vcan_handler_backup import setVHAL
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'Vhal_CLI_API')))
 
 
+def process_can_message(message):
+    print(f"Received CAN message: {message}")
 
-def main():
+    can_iuput_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print("CAN Signal Input", can_iuput_time)
+
+    iginition_state = str(message.data[0])
+    gear_selection = str(message.data[1])
+    vehicle_speed = str(message.data[2])
+    charge_port_connection = str(message.data[3])
+    charge_port_open = str(message.data[4])
+    parking_break_auto = str(message.data[5])
+
+    if iginition_state is not None:
+        result = subprocess.run(setVHAL("289408009", iginition_state, "0"), capture_output=True,
+                                text=True, shell=True)
+
+    if gear_selection is not None:
+        result = subprocess.run(setVHAL("289408000", gear_selection, "0"), capture_output=True,
+                                text=True, shell=True)
+
+    if vehicle_speed is not None:
+        result = subprocess.run(setVHAL("291504648", vehicle_speed, "0"), capture_output=True, text=True,
+                                shell=True)
+
+    if charge_port_connection is not None:
+        result = subprocess.run(setVHAL("287310603", charge_port_connection, "0"), capture_output=True,
+                                text=True, shell=True)
+
+    if charge_port_open is not None:
+        result = subprocess.run(setVHAL("287310602", charge_port_open, "0"), capture_output=True,
+                                text=True, shell=True)
+
+    if parking_break_auto is not None:
+        result = subprocess.run(setVHAL("287310851", parking_break_auto, "0"), capture_output=True,
+                                text=True, shell=True)
+
+
+async def read_can_messages(bus):
+    while True:
+        messages = bus.recv(0.1)
+        if messages:
+            process_can_message(messages)
+        await asyncio.sleep(0.01)
+
+
+async def main():
     bus = can.interface.Bus(channel='vcan0', bustype='socketcan')
-
-    prev_iginitionState = None
-    prev_gearSelection = None
-    prev_vehicleSpeed = None
-    prev_chargePortConnection = None
-    prev_ChargePortOpen = None
-    prev_parkingBreakAuto = None
 
     print("CAN Bus Read Start")
     in_count = 0
 
     try:
-        while True:
-            message = bus.recv(timeout=0.1) #100ms 타임아웃 설정
-
-            if message:
-                can_iuput_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                print("CAN Signal Input", can_iuput_time)
-                canId = message.arbitration_id
-                iginitionState = str(message.data[0])
-                gearSelection = str(message.data[1])
-                vehicleSpeed = str(message.data[2])
-                chargePortConnection = str(message.data[3])
-                ChargePortOpen = str(message.data[4])
-                parkingBreakAuto = str(message.data[5])
-
-                if in_count % 10 == 0:
-                    if iginitionState is not None:
-                        result = subprocess.run(setVHAL("289408009", iginitionState, "0"), capture_output=True,
-                                                text=True, shell=True)
-
-                    if gearSelection is not None:
-                        result = subprocess.run(setVHAL("289408000", gearSelection, "0"), capture_output=True,
-                                                text=True, shell=True)
-
-                    if vehicleSpeed is not None:
-                        result = subprocess.run(setVHAL("291504648", vehicleSpeed, "0"), capture_output=True, text=True,
-                                                shell=True)
-
-                    if chargePortConnection is not None:
-                        result = subprocess.run(setVHAL("287310603", chargePortConnection, "0"), capture_output=True,
-                                                text=True, shell=True)
-
-                    if ChargePortOpen is not None:
-                        result = subprocess.run(setVHAL("287310602", ChargePortOpen, "0"), capture_output=True,
-                                                text=True, shell=True)
-
-                    if parkingBreakAuto is not None:
-                        result = subprocess.run(setVHAL("287310851", parkingBreakAuto, "0"), capture_output=True,
-                                                text=True, shell=True)
-
+        await read_can_messages(bus)
     except KeyboardInterrupt:
         pass
 
     if __name__ == "__main__":
-        main()
+        await main()
