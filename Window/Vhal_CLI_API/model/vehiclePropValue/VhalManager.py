@@ -1,10 +1,10 @@
 import sys
 import subprocess
-from VehiclePropValueList import VehiclePropValueList
+from VehiclePropValueList import Vehiclepropvaluelist
 from VehiclePropValue import VehiclePropValue
 
 class VhalManager:
-    vehiclePropValueList = VehiclePropValueList
+    vehiclePropValueList = Vehiclepropvaluelist
 
 
     def __init__(self):
@@ -42,7 +42,7 @@ class VhalManager:
     
 
     def matchValueType(propertyId, value, areaId):
-        vehiclePropValueList =  VehiclePropValueList(propertyId)
+        vehiclePropValueList =  Vehiclepropvaluelist(propertyId)
         result = subprocess.run(VhalManager.run(propertyId), capture_output=True, text=True, shell=True)
 
         lines = result.stdout.split('\n')[:-3] 
@@ -127,6 +127,6 @@ class VhalManager:
             stringValues = None
         else:
             dataType = "str"
-        entry = VehiclePropValue(timestamp, areaId, prop, status, dataType, int32Values=int32Values, floatValues=floatValues, int64Values=int64Values, byteValues=byteValues, stringValues=stringValues)
+        entry = VehiclePropValue(timestamp, areaId, prop, status, dataType, int32_values=int32Values, float_values=floatValues, int64_values=int64Values, byte_values=byteValues, string_values=stringValues)
 
         return entry

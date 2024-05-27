@@ -1,11 +1,8 @@
-import numpy as np
 import subprocess
-import re
-import can
 
-import sys
-from VehiclePropValueList import VehiclePropValueList
 from VehiclePropValue import VehiclePropValue
+from VehiclePropValueList import VehiclePropValueList
+
 
 #cmd 명령 실행 함수
 def run_adb_command(command):

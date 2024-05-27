@@ -1,10 +1,14 @@
 import subprocess
 import re
 import can
-import sys
-sys.path.append("../model/vehiclePropValue")
-from VehiclePropValueList import VehiclePropValueList
-from VehiclePropValue import VehiclePropValue
+import sys, os
+
+from Window.Vhal_CLI_API.model.vehiclePropValue.VehiclePropValue import VehiclePropValue
+from Window.Vhal_CLI_API.model.vehiclePropValue.VehiclePropValueList import Vehiclepropvaluelist
+
+# sys.path.append("../model/vehiclePropValue")
+# from VehiclePropValueList import VehiclePropValueList
+# from VehiclePropValue import VehiclePropValue
 
 #cmd 명령 실행 함수
 def run_adb_command(command):
@@ -28,7 +32,7 @@ def execute_adb_command(action, propertyId=None, value=None, area=None):
     print(adb_command)
     try:
 
-        result = subprocess.run(adb_command, capture_output=True,asd text=True, shell=True)
+        result = subprocess.run(adb_command, capture_output=True, text=True, shell=True)
         
         print("ADB Command Output:")
         print(result.stdout)
@@ -54,7 +58,7 @@ def setVHAL(propertyId, value, areaId):
 
 # 속성값을 가져오는 함수
 def matchValueType(propertyId, value, areaId):
-    vehiclePropValueList =  VehiclePropValueList(propertyId)
+    vehiclePropValueList =  Vehiclepropvaluelist(propertyId)
     result = subprocess.run(getVHAL(propertyId), capture_output=True, text=True, shell=True)
 
     lines = result.stdout.split('\n')[:-3] 
@@ -130,7 +134,7 @@ def parsingVhal(datas_dict):
        stringValues = None
     else:
         dataType = "str"
-    entry = VehiclePropValue(timestamp, areaId, prop, status, dataType, int32Values=int32Values, floatValues=floatValues, int64Values=int64Values, byteValues=byteValues, stringValues=stringValues)
+    entry = VehiclePropValue(timestamp, areaId, prop, status, dataType, int32_values=int32Values, float_values=floatValues, int64_values=int64Values, byte_values=byteValues, string_values=stringValues)
 
     return entry
 
