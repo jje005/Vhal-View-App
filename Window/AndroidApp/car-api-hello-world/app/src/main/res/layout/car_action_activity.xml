@@ -80,27 +80,10 @@
             android:layout_height="match_parent" />
 
 
-        <FrameLayout
-            android:layout_width="633dp"
-            android:layout_height="match_parent"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/speed_text_view"
-                android:layout_width="match_parent"
-                android:layout_height="515dp"
-                android:gravity="center"
-                android:text=""
-                android:textColor="@color/button_white"
-                android:textSize="72sp" />
-
-            <com.jyjang.carSpeed.ui.SpeedometerView
-                android:layout_width="628dp"
-                android:layout_height="365dp"
-                android:gravity="center">
-
-            </com.jyjang.carSpeed.ui.SpeedometerView>
-        </FrameLayout>
+        <com.github.anastr.speedviewlib.AwesomeSpeedometer
+            android:id="@+id/awesomeSpeedometer"
+            android:layout_width="291dp"
+            android:layout_height="match_parent" />
 
 
     </LinearLayout>
