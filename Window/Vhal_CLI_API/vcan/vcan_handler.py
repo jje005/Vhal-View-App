@@ -4,7 +4,7 @@ import re
 import can
 import datetime
 
-from commands.backup import setVHAL
+from commands.Vhal_api import set_vhal
 
 def main():
     bus = can.interface.Bus(channel='vcan0', bustype='socketcan')
@@ -36,27 +36,27 @@ def main():
 
                 if inCount % 10 == 0:
                     if iginitionState is not None:
-                        result = subprocess.run(setVHAL("289408009", iginitionState, "0"), capture_output=True,
+                        result = subprocess.run(set_vhal("289408009", iginitionState, "0"), capture_output=True,
                                                 text=True, shell=True)
 
                     if gearSelection is not None:
-                        result = subprocess.run(setVHAL("289408000", gearSelection, "0"), capture_output=True,
+                        result = subprocess.run(set_vhal("289408000", gearSelection, "0"), capture_output=True,
                                                 text=True, shell=True)
 
                     if vehicleSpeed is not None:
-                        result = subprocess.run(setVHAL("291504648", vehicleSpeed, "0"), capture_output=True, text=True,
+                        result = subprocess.run(set_vhal("291504648", vehicleSpeed, "0"), capture_output=True, text=True,
                                                 shell=True)
 
                     if chargePortConnection is not None:
-                        result = subprocess.run(setVHAL("287310603", chargePortConnection, "0"), capture_output=True,
+                        result = subprocess.run(set_vhal("287310603", chargePortConnection, "0"), capture_output=True,
                                                 text=True, shell=True)
 
                     if ChargePortOpen is not None:
-                        result = subprocess.run(setVHAL("287310602", ChargePortOpen, "0"), capture_output=True,
+                        result = subprocess.run(set_vhal("287310602", ChargePortOpen, "0"), capture_output=True,
                                                 text=True, shell=True)
 
                     if parkingBreakAuto is not None:
-                        result = subprocess.run(setVHAL("287310851", parkingBreakAuto, "0"), capture_output=True,
+                        result = subprocess.run(set_vhal("287310851", parkingBreakAuto, "0"), capture_output=True,
                                                 text=True, shell=True)
 
     except KeyboardInterrupt:
