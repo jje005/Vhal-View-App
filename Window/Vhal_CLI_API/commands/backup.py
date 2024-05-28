@@ -1,14 +1,7 @@
-import numpy as np
 import subprocess
-import re
-import can
-import datetime
 
-import sys
-
-sys.path.append("/home/SDV_10F/Window/api/model/vehiclePropValue")
-from VehiclePropValueList import VehiclePropValueList
-from VehiclePropValue import VehiclePropValue
+from model.vehiclePropValue.VehiclePropValue import VehiclePropValue
+from model.vehiclePropValue.VehiclePropValueList import Vehiclepropvaluelist
 
 
 # cmd 명령 실행 함수
@@ -17,7 +10,7 @@ def run_adb_command(command):
     return result.stdout
 
 
-# action 실행 함수
+#action 실행 함수
 def execute_adb_command(action, propertyId=None, value=None, area=None):
     if action == "get":
         adb_command = getVHAL(propertyId)
@@ -38,7 +31,7 @@ def execute_adb_command(action, propertyId=None, value=None, area=None):
         print("ADB Command Output:")
         print(result.stdout)
     except Exception as e:
-        print("Error occurred while executing adb command:", e)
+        print("Error occurred while executing adb commands:", e)
 
 
 # get 함수
@@ -56,13 +49,13 @@ def setVHAL(propertyId, value, areaId):
     adb_command = "adb shell dumpsys android.hardware.automotive.vehicle.IVehicle/default --set "
     adb_command += propertyId + " "
     adb_command += matchValueType(propertyId, value, areaId)
-    print(adb_command)
+
     return adb_command
 
 
 # 속성값을 가져오는 함수
 def matchValueType(propertyId, value, areaId):
-    vehiclePropValueList = VehiclePropValueList(propertyId)
+    vehiclePropValueList = Vehiclepropvaluelist(propertyId)
     result = subprocess.run(getVHAL(propertyId), capture_output=True, text=True, shell=True)
 
     lines = result.stdout.split('\n')[:-3]
@@ -150,76 +143,32 @@ def parsingVhal(datas_dict):
 
 
 def main():
-    # CAN 네트워크에 연결
-    bus = can.interface.Bus(channel='vcan0', bustype='socketcan')
+    while True:
+        try:
+            # 사용자 입력 받기
+            user_input = input("Enter commands (e.g., 'adb set property_id value area'): ").split()
 
-    prev_iginitionState = 1
-    prev_gearSelection = 4
-    prev_vehicleSpeed = 0
-    prev_chargePortConnection = 1
-    prev_ChargePortOpen = 1
-    prev_parkingBreakAuto = 1
+            # 입력이 유효한지 확인
+            if not user_input:
+                print("Invalid input. Please enter a commands.")
+                continue
 
-    print("CAN Bus Read Start")
-    # 메시지 수신
-    inCount = 0
-    try:
-        while True:
-            message = bus.recv(timeout=0.1)  # 100ms 타임아웃 설정
-
-            if message:
-                canInputTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                print("CAN Signal Input", canInputTime)
-                canId = message.arbitration_id
-                iginitionState = str(message.data[0])
-                gearSelection = str(message.data[1])
-                vehicleSpeed = str(message.data[2])
-                chargePortConnection = str(message.data[3])
-                ChargePortOpen = str(message.data[4])
-                parkingBreakAuto = str(message.data[5])
-
-                if inCount % 10 == 0:
-                    # print("CAN Signal Value to iginit State : " + iginitionState)
-                    # print("CAN Signal Value to Gear Selection : " + gearSelection)
-                    # print("CAN Signal Value to Vehicle Speed : " + vehicleSpeed)
-                    # print("CAN Signal Value to Charege Port Connection : " + chargePortConnection)
-                    # print("CAN Signal Value to Charege Port Open : " + ChargePortOpen)
-                    # print("CAN Signal Value to Auto Parking break : " + parkingBreakAuto)
-
-                    if iginitionState is not None:
-                        result = subprocess.run(setVHAL("289408009", iginitionState, "0"), capture_output=True,
-                                                text=True, shell=True)
-
-                    if gearSelection is not None:
-                        result = subprocess.run(setVHAL("289408000", gearSelection, "0"), capture_output=True,
-                                                text=True, shell=True)
-
-                    if vehicleSpeed is not None:
-                        result = subprocess.run(setVHAL("291504648", vehicleSpeed, "0"), capture_output=True, text=True,
-                                                shell=True)
-
-                    if chargePortConnection is not None:
-                        result = subprocess.run(setVHAL("287310603", chargePortConnection, "0"), capture_output=True,
-                                                text=True, shell=True)
-
-                    if ChargePortOpen is not None:
-                        result = subprocess.run(setVHAL("287310602", ChargePortOpen, "0"), capture_output=True,
-                                                text=True, shell=True)
-
-                    if parkingBreakAuto is not None:
-                        result = subprocess.run(setVHAL("287310851", parkingBreakAuto, "0"), capture_output=True,
-                                                text=True, shell=True)
-
-                # setVHAL("289408009", iginitionState, "0")
-                # setVHAL("289408000", gearSelection, "0")
-                # setVHAL("291504648", vehicleSpeed, "0")
-                # setVHAL("287310603", chargePortConnection, "0")
-                # setVHAL("287310602", ChargePortOpen, "0")
-                # setVHAL("287310851", parkingBreakAuto, "0")
-
-
-    except KeyboardInterrupt:
-        pass
+            action = user_input[0]
+            if action == "list":
+                execute_adb_command(action)
+            elif action == "get":
+                property_id = user_input[1]
+                execute_adb_command(action, property_id)
+            elif action == "set":
+                property_id = user_input[1]
+                property_value = user_input[2]
+                property_area = user_input[3]
+                execute_adb_command(action, property_id, property_value, property_area)
+            else:
+                print("Invalid input. Please enter a valid commands.")
+        except KeyboardInterrupt:
+            print("\nProgram terminated.")
+            break
 
 
 if __name__ == "__main__":
