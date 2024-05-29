@@ -1,5 +1,0 @@
-{
-    "python.analysis.extraPaths": [
-        "./Window/api/model/vehiclePropValue"
-    ]
-}

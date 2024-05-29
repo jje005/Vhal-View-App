@@ -5,8 +5,8 @@ import can
 import datetime
 
 
-from model.vehiclePropValue import VehiclePropValueList
-from model.vehiclePropValue import VehiclePropValue
+from model.VehiclePropValueList import Vehiclepropvaluelist
+from model.VehiclePropValue import VehiclePropValue
 
 
 # cmd 명령 실행 함수
@@ -54,6 +54,7 @@ def setVHAL(propertyId, value, areaId):
     adb_command = "adb shell dumpsys android.hardware.automotive.vehicle.IVehicle/default --set "
     adb_command += propertyId + " "
     adb_command += matchValueType(propertyId, value, areaId)
+    result = subprocess.run(adb_command, capture_output=True, text=True, shell=True)
     print(adb_command)
     return adb_command
 

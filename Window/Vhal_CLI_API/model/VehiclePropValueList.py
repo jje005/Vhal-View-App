@@ -2,7 +2,7 @@
 
 import sys
 
-sys.path.append(r'D:\00.Project\SDV\SDVPRJ\-SDV\PythonAdb\model\vehiclePropValue')
+sys.path.append("/home/Vhal-View-App/Window/Vhal_CLI_API/model/vehiclePropValue")
 
 
 class Vehiclepropvaluelist:

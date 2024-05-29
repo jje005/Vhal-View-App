@@ -58,6 +58,7 @@ async def read_can_messages(bus):
 
 
 async def main():
+    print("CAN Bus Read Start")
     bus = can.interface.Bus(channel='vcan0', bustype='socketcan')
 
     print("CAN Bus Read Start")

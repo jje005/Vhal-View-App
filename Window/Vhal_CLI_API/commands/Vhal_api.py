@@ -1,7 +1,10 @@
 import subprocess
+import sys
 
-from model.vehiclePropValue.VehiclePropValue import VehiclePropValue
-from model.vehiclePropValue.VehiclePropValueList import Vehiclepropvaluelist
+sys.path.append("/home/Vhal-View-App/Window/Vhal_CLI_API/model/vehiclePropValue")
+
+from model.VehiclePropValue import VehiclePropValue
+from model.VehiclePropValueList import Vehiclepropvaluelist
 
 
 # cmd 명령 실행 함수
@@ -109,7 +112,8 @@ def parsing_vhal(data_dict):
         string_values = None
     else:
         data_type = "str"
-    entry = VehiclePropValue(timestamp, area_id, prop, status, data_type, int32Values=int32_values, floatValues=float_values, int64Values=int64_values, byteValues=byte_values, stringValues=string_values)
-
+    entry = VehiclePropValue(timestamp, area_id, prop, status, data_type, int32Values=int32_values,
+                             floatValues=float_values, int64Values=int64_values, byteValues=byte_values,
+                             stringValues=string_values)
 
     return entry
