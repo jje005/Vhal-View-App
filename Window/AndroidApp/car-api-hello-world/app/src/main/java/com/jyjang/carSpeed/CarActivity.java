@@ -211,7 +211,7 @@ public class CarActivity extends AppCompatActivity {
             public void onErrorEvent(int propId, int zone) {
                 Log.e(TAG, "Error event for property ID: " + propId + ", zone: " + zone);
             }
-        }, VehiclePropertyIds.PERF_VEHICLE_SPEED, CarPropertyManager.SENSOR_RATE_NORMAL);
+        }, VehiclePropertyIds.PERF_VEHICLE_SPEED_DISPLAY, CarPropertyManager.SENSOR_RATE_NORMAL);
 
         //IGNITION_STATE
         mCarPropertyManager.registerCallback(new CarPropertyManager.CarPropertyEventCallback() {
