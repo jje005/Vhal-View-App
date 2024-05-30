@@ -210,7 +210,7 @@ class CarActivity2 : AppCompatActivity() {
 
     private fun setImageViewPropValue(imageView: ImageView, value: Boolean) {
         if (!value) {
-            val color = Color.parseColor("#FF0000")
+            val color = Color.parseColor("#00BFFF")
             val colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP)
             imageView.colorFilter = colorFilter
             return

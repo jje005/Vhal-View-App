@@ -236,7 +236,7 @@ public class CarActivity extends AppCompatActivity {
 
     public void setImageViewPropValue(ImageView imageView, boolean value){
         if(!value){
-            int color = Color.parseColor("#FF0000"); // 빨간색
+            int color = Color.parseColor("#00BFFF"); // 파란색
             PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP);
             imageView.setColorFilter(colorFilter);
             return;
