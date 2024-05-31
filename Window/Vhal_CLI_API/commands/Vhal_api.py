@@ -31,7 +31,7 @@ def set_vhal(process, property_id, value, area_id):
 
 
 # Float 타입 set 메소드
-def set_vhal_Integer(process, propertyId, value, areaId):
+def set_vhal_float(process, propertyId, value, areaId):
     adb_command = f"dumpsys android.hardware.automotive.vehicle.IVehicle/default --set {propertyId} -f {value} -a {areaId}\n"
     try:
         process.stdin.write(adb_command)

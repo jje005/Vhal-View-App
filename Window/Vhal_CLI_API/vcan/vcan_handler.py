@@ -1,63 +1,64 @@
-
 import subprocess
 import re
 import can
-import datetime
+import time
+import logging
 
-from commands.Vhal_api import set_vhal
+import sys
+sys.path.append("/home/Vhal-View-App/Window/Vhal_CLI_API/")
+from commands.Vhal_api import set_vhal, get_vhal, get_vhal_list, set_vhal_Integer, set_vhal_float, process
+
 
 def main():
     bus = can.interface.Bus(channel='vcan0', bustype='socketcan')
 
-    prev_iginitionState = 1
-    prev_gearSelection = 4
+    prev_ignitionState = 0
+    prev_gearSelection = 0
     prev_vehicleSpeed = 0
-    prev_chargePortConnection = 1
-    prev_ChargePortOpen = 1
-    prev_parkingBreakAuto = 1
+    prev_chargePortConnection = 0
+    prev_ChargePortOpen = 0
+    prev_parkingBreakAuto = 0
 
-    print("CAN Bus Read Start")
+
     # 메시지 수신
     inCount = 0
     try:
         while True:
-            message = bus.recv(timeout=0.1)  # 100ms 타임아웃 설정
+            logging.info('START CAN BUS REVEIVE')
+            message = bus.recv()  # 100ms 타임아웃 설정
 
             if message:
-                canInputTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                print("CAN Signal Input", canInputTime)
-                canId = message.arbitration_id
-                iginitionState = str(message.data[0])
+                ignitionState = str(message.data[0])
                 gearSelection = str(message.data[1])
                 vehicleSpeed = str(message.data[2])
                 chargePortConnection = str(message.data[3])
                 ChargePortOpen = str(message.data[4])
                 parkingBreakAuto = str(message.data[5])
 
-                if inCount % 10 == 0:
-                    if iginitionState is not None:
-                        result = subprocess.run(set_vhal("289408009", iginitionState, "0"), capture_output=True,
-                                                text=True, shell=True)
+                if prev_ignitionState != ignitionState:
+                    prev_ignitionState = ignitionState
+                    set_vhal_Integer(process, "289408009", ignitionState, "0")
 
-                    if gearSelection is not None:
-                        result = subprocess.run(set_vhal("289408000", gearSelection, "0"), capture_output=True,
-                                                text=True, shell=True)
+                if prev_gearSelection != gearSelection:
+                    prev_gearSelection = gearSelection
+                    set_vhal_Integer(process, "289408009", gearSelection, "0")
 
-                    if vehicleSpeed is not None:
-                        result = subprocess.run(set_vhal("291504648", vehicleSpeed, "0"), capture_output=True, text=True,
-                                                shell=True)
+                if prev_vehicleSpeed != vehicleSpeed:
+                    prev_vehicleSpeed = vehicleSpeed
+                    set_vhal_float(process, "289408009", vehicleSpeed, "0")
 
-                    if chargePortConnection is not None:
-                        result = subprocess.run(set_vhal("287310603", chargePortConnection, "0"), capture_output=True,
-                                                text=True, shell=True)
+                if prev_chargePortConnection != chargePortConnection:
+                    prev_chargePortConnection = chargePortConnection
+                    set_vhal_Integer(process, "289408009", chargePortConnection, "0")
 
-                    if ChargePortOpen is not None:
-                        result = subprocess.run(set_vhal("287310602", ChargePortOpen, "0"), capture_output=True,
-                                                text=True, shell=True)
+                if prev_ChargePortOpen != ChargePortOpen:
+                    prev_ChargePortOpen = ChargePortOpen
+                    set_vhal_Integer(process, "289408009", ChargePortOpen, "0")
 
-                    if parkingBreakAuto is not None:
-                        result = subprocess.run(set_vhal("287310851", parkingBreakAuto, "0"), capture_output=True,
-                                                text=True, shell=True)
+                if prev_parkingBreakAuto != parkingBreakAuto:
+                    prev_parkingBreakAuto = parkingBreakAuto
+                    set_vhal_Integer(process, "289408009", parkingBreakAuto, "0")
+
 
     except KeyboardInterrupt:
         pass
