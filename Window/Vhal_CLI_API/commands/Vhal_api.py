@@ -1,25 +1,53 @@
 import subprocess
 import sys
+import logging
 
-sys.path.append("/home/Vhal-View-App/Window/Vhal_CLI_API/model/vehiclePropValue")
+sys.path.append("D:/00.Project/SDV/Vhal-View-App/Window/Vhal_CLI_API/model")
 
-from model.VehiclePropValue import VehiclePropValue
-from model.VehiclePropValueList import Vehiclepropvaluelist
+from VehiclePropValue import VehiclePropValue
+from VehiclePropValueList import Vehiclepropvaluelist
+
+process = subprocess.Popen(['adb', 'shell'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                           text=True)
+
+logging.basicConfig(
+    format='%(asctime)s.%(msecs)03d - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    level=logging.DEBUG,
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
 
 
-# cmd 명령 실행 함수
-def run_adb_command(command):
-    result = subprocess.run(command, capture_output=True, text=True)
-    return result.stdout
-
-
-# set 함수
-def set_vhal(property_id, value, area_id):
-    adb_command = "adb shell dumpsys android.hardware.automotive.vehicle.IVehicle/default --set "
+# set 함수 (value Type을 모를때 사용)
+def set_vhal(process, property_id, value, area_id):
+    adb_command = "dumpsys android.hardware.automotive.vehicle.IVehicle/default --set "
     adb_command += property_id + " "
     adb_command += match_value_type(property_id, value, area_id)
+    try:
+        process.stdin.write(adb_command)
+        process.stdin.flush()
+    except ValueError:
+        print("Error: Unable to write to process")
 
-    return adb_command
+
+# Float 타입 set 메소드
+def set_vhal_Integer(process, propertyId, value, areaId):
+    adb_command = f"dumpsys android.hardware.automotive.vehicle.IVehicle/default --set {propertyId} -f {value} -a {areaId}\n"
+    try:
+        process.stdin.write(adb_command)
+        process.stdin.flush()
+    except ValueError:
+        print("Error: Unable to write to process")
+
+
+# Integer 타입 set 메소드
+def set_vhal_Integer(process, propertyId, value, areaId):
+    adb_command = f"dumpsys android.hardware.automotive.vehicle.IVehicle/default --set {propertyId} -i {value} -a {areaId}\n"
+    try:
+        process.stdin.write(adb_command)
+        process.stdin.flush()
+    except ValueError:
+        print("Error: Unable to write to process")
 
 
 # 전체 list에서 id에 해당하는 vhal의 area값을 가져오는 함수
@@ -50,11 +78,24 @@ def check_value_type(value_type, value):
 
 
 def get_vhal(property_id):
-    return f"adb shell dumpsys android.hardware.automotive.vehicle.IVehicle/default --get {property_id}"
+    adb_command = f"dumpsys android.hardware.automotive.vehicle.IVehicle/default --get {property_id}"
+    try:
+        process.stdin.write(adb_command)
+        output = process.communicate()
+        print(output)
+    except ValueError:
+        logging.info("Error : Can't fine Property Id ")
 
 
 def get_vhal_list():
-    return "adb shell dumpsys android.hardware.automotive.vehicle.IVehicle/default --list"
+    adb_command = "dumpsys android.hardware.automotive.vehicle.IVehicle/default --list"
+    try:
+        process.stdin.write(adb_command)
+        process.stout()
+        process.stdin.flush()
+
+    except ValueError:
+        logging.info("Error : Can't fine Property Id List ")
 
 
 def set_value_type(value_type):
