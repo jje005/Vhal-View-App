@@ -1,6 +1,12 @@
+import logging
 import subprocess
 import sys
-import logging
+import typer
+
+
+#CLI 라이브러리
+app = typer.Typer()
+
 
 sys.path.append("D:/00.Project/SDV/Vhal-View-App/Window/Vhal_CLI_API/model")
 
@@ -18,8 +24,8 @@ logging.basicConfig(
 )
 
 
-# set 함수 (value Type을 모를때 사용)
-def set_vhal(process, property_id, value, area_id):
+@app.command()
+def set(property_id:int, value, area_id:int):
     adb_command = "dumpsys android.hardware.automotive.vehicle.IVehicle/default --set "
     adb_command += property_id + " "
     adb_command += match_value_type(property_id, value, area_id)
@@ -27,33 +33,33 @@ def set_vhal(process, property_id, value, area_id):
         process.stdin.write(adb_command)
         process.stdin.flush()
     except ValueError:
-        print("Error: Unable to write to process")
+        typer.echo("Error: Unable to write to process")
 
 
-# Float 타입 set 메소드
-def set_vhal_float(process, propertyId, value, areaId):
+@app.command()
+def set_float(propertyId: int, value: int, areaId: float):
     adb_command = f"dumpsys android.hardware.automotive.vehicle.IVehicle/default --set {propertyId} -f {value} -a {areaId}\n"
     try:
         process.stdin.write(adb_command)
         process.stdin.flush()
     except ValueError:
-        print("Error: Unable to write to process")
+        typer.echo("Error: Unable to write to process")
 
 
-# Integer 타입 set 메소드
-def set_vhal_Integer(process, propertyId, value, areaId):
+@app.command()
+def set_integer(propertyId: int, value: int, areaId: float):
     adb_command = f"dumpsys android.hardware.automotive.vehicle.IVehicle/default --set {propertyId} -i {value} -a {areaId}\n"
     try:
         process.stdin.write(adb_command)
         process.stdin.flush()
     except ValueError:
-        print("Error: Unable to write to process")
+        typer.echo("Error: Unable to write to process")
 
 
 # 전체 list에서 id에 해당하는 vhal의 area값을 가져오는 함수
 def match_value_type(propertyId, value, areaId):
     vehicle_prop_value_list = Vehiclepropvaluelist(propertyId)
-    result = subprocess.run(get_vhal(propertyId), capture_output=True, text=True, shell=True)
+    result = get(propertyId)
 
     lines = result.stdout.split('\n')[:-3]
     data_dict = {}
@@ -77,17 +83,19 @@ def check_value_type(value_type, value):
     return set_value_type(value_type) + value + " "
 
 
-def get_vhal(property_id):
+@app.command()
+def get(property_id:int):
     adb_command = f"dumpsys android.hardware.automotive.vehicle.IVehicle/default --get {property_id}"
     try:
         process.stdin.write(adb_command)
         output = process.communicate()
-        print(output)
+        typer.echo(output)
     except ValueError:
-        logging.info("Error : Can't fine Property Id ")
+        typer.echo("Error : Can't fine Property Id ")
 
 
-def get_vhal_list():
+@app.command()
+def list():
     adb_command = "dumpsys android.hardware.automotive.vehicle.IVehicle/default --list"
     try:
         process.stdin.write(adb_command)
@@ -95,7 +103,7 @@ def get_vhal_list():
         process.stdin.flush()
 
     except ValueError:
-        logging.info("Error : Can't fine Property Id List ")
+        typer.echo("Error : Can't fine Property Id List ")
 
 
 def set_value_type(value_type):
@@ -158,3 +166,11 @@ def parsing_vhal(data_dict):
                              stringValues=string_values)
 
     return entry
+
+
+def main():
+    print("Hello")
+
+
+if __name__ == "__main__":
+    app()
