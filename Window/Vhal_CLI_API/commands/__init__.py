@@ -1,3 +1,3 @@
-from .Vhal_api import set_vhal, get_vhal, get_vhal_list
+from .Vhal_api import set, get, list, set_float, set_integer
 
-__all__ = ['set_vhal', 'get_vhal', 'get_vhal_list']
+__all__ = ['set', 'get', 'list', 'set_integer', 'set_float']

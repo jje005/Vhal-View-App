@@ -3,15 +3,17 @@ import subprocess
 import sys
 import typer
 
-
 #CLI 라이브러리
 app = typer.Typer()
-
-
 sys.path.append("D:/00.Project/SDV/Vhal-View-App/Window/Vhal_CLI_API/model")
 
 from VehiclePropValue import VehiclePropValue
 from VehiclePropValueList import Vehiclepropvaluelist
+
+sys.path.append("D:/00.Project/SDV/Vhal-View-App/Window/Vhal_CLI_API/network")
+from ConnectionManager import connection_instance
+app.add_typer(connection_instance.app, name="connection")
+
 
 process = subprocess.Popen(['adb', 'shell'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                            text=True)
@@ -25,7 +27,7 @@ logging.basicConfig(
 
 
 @app.command()
-def set(property_id:int, value, area_id:int):
+def set(property_id: int, value, area_id: int):
     adb_command = "dumpsys android.hardware.automotive.vehicle.IVehicle/default --set "
     adb_command += property_id + " "
     adb_command += match_value_type(property_id, value, area_id)
@@ -59,9 +61,10 @@ def set_integer(propertyId: int, value: int, areaId: float):
 # 전체 list에서 id에 해당하는 vhal의 area값을 가져오는 함수
 def match_value_type(propertyId, value, areaId):
     vehicle_prop_value_list = Vehiclepropvaluelist(propertyId)
-    result = get(propertyId)
+    #result = get(propertyId)
+    #lines = result.stdout.split('\n')[:-3]
 
-    lines = result.stdout.split('\n')[:-3]
+    lines = get(propertyId).stdout.split('\n')[:-3]
     data_dict = {}
     for line in lines:
         data_str = line.replace('{', ',')
@@ -84,7 +87,7 @@ def check_value_type(value_type, value):
 
 
 @app.command()
-def get(property_id:int):
+def get(property_id: int):
     adb_command = f"dumpsys android.hardware.automotive.vehicle.IVehicle/default --get {property_id}"
     try:
         process.stdin.write(adb_command)
@@ -104,6 +107,10 @@ def list():
 
     except ValueError:
         typer.echo("Error : Can't fine Property Id List ")
+
+
+app.add_typer(connection_instance.app, name="connection")
+
 
 
 def set_value_type(value_type):

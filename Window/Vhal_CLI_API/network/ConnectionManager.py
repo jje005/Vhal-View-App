@@ -10,9 +10,8 @@ app = typer.Typer()
 
 class ConnectionManager:
     _instance = None
-    process = subprocess.Popen(['adb', 'connect'], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE,
-                               text=True)
+    process = None
+    app = typer.Typer()
 
     def __init__(self):
         self.local_connection_model = None
@@ -25,7 +24,9 @@ class ConnectionManager:
         return cls._instance
 
     def initialize(self):
-        self.process = subprocess.Popen(["/bin/bash"], stdin=subprocess.PIPE, text=True)
+        self.process = subprocess.Popen(['adb', 'connect'], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                        stderr=subprocess.PIPE,
+                                        text=True)
 
     @app.command()
     def set_connection(self, connection_type: str, address: str, port: int):
@@ -51,9 +52,20 @@ class ConnectionManager:
             command = self.remote_connection_model.get_address() + " : " + self.remote_connection_model.get_port()
             self.run_command(command)
 
-    def set_local_connection(self):
-        self.local_connection_model.set_address("10.10.10.10")
-        self.local_connection_model.set_port(8888)
+    def set_local_connection(self, ip: None, port: None):
+        if ip is None:
+            self.local_connection_model.set_address("10.10.10.10")
+            typer.echo("Success : Setting local IP : 10.10.10.10")
+        else:
+            self.local_connection_model.set_address(ip)
+            typer.echo(f"Success : Setting local IP : {ip}")
+
+        if port is None:
+            self.local_connection_model.set_port(8888)
+            typer.echo("Success : Setting local port : 8888")
+        else:
+            self.local_connection_model.set_port(port)
+            typer.echo(f"Success : Setting local port : {port}")
 
     def set_remote_connection(self, ip: str, port: int):
         self.remote_connection_model.set_address(ip)
@@ -68,5 +80,4 @@ class ConnectionManager:
             typer.echo("Error : Can't Connect ")
 
 
-if __name__ == "__main__":
-    app()
+connection_instance = ConnectionManager()
