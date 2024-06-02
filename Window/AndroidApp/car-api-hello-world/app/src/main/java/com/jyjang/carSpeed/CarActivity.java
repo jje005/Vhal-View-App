@@ -19,6 +19,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.carapihelloworld.R;
+import com.github.anastr.speedviewlib.AwesomeSpeedometer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +69,7 @@ public class CarActivity extends AppCompatActivity {
         driveGearImage = findViewById(R.id.drive_gear_text);
         neutralGearImage = findViewById(R.id.neutral_gear_text);
 
-        speedTextView = findViewById(R.id.speed_text_view);
+//        speedTextView = findViewById(R.id.speed_text_view);
         ignitionTextView = findViewById(R.id.ignition_state_text);
 
         main();
@@ -204,7 +205,9 @@ public class CarActivity extends AppCompatActivity {
                 int propertyId = carPropertyValue.getPropertyId();
                 Object propertyValue = carPropertyValue.getValue();
                 Log.d(TAG, propertyId + "(PERF_VEHICLE_SPEED)is Change " + propertyValue);
-                setCarSpeedValue(speedTextView,(float)propertyValue);
+                AwesomeSpeedometer awesomeSpeedometer= (AwesomeSpeedometer) findViewById(R.id.awesomeSpeedometer);
+                awesomeSpeedometer.speedTo((float)propertyValue);
+//                setCarSpeedValue(speedTextView,(float)propertyValue);
             }
 
             @Override
@@ -233,7 +236,7 @@ public class CarActivity extends AppCompatActivity {
 
     public void setImageViewPropValue(ImageView imageView, boolean value){
         if(!value){
-            int color = Color.parseColor("#FF0000"); // 빨간색
+            int color = Color.parseColor("#00BFFF"); // 파란색
             PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP);
             imageView.setColorFilter(colorFilter);
             return;

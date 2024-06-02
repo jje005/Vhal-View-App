@@ -12,228 +12,134 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="30"
+        android:layout_weight="250"
+        android:gravity="center"
         android:orientation="horizontal"
-        android:weightSum="5">
+        android:weightSum="3">
 
-
+        <com.github.anastr.speedviewlib.AwesomeSpeedometer
+            android:id="@+id/awesomeSpeedometer"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_height="match_parent"
+            android:padding="30dp"
+            />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="190"
+        android:layout_weight="50"
         android:orientation="horizontal"
         android:weightSum="3">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="0.4"
-            android:orientation="vertical"
-            android:weightSum="1"
+            android:layout_weight="1"
+            android:orientation="horizontal"
             tools:ignore="NestedWeights">
+
+            <TextView
+                android:id="@+id/ignition_state_text"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner_white"
+                android:gravity="center"
+                android:text=""
+                android:padding="5dp"
+                android:textSize="16sp" />
 
             <ImageView
                 android:id="@+id/auto_parking_image"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginBottom="10dp"
-                android:layout_weight="0.3"
-                android:background="@drawable/rounded_corner_white"
-                android:src="@drawable/parking_brake_image"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/parking"
+                android:padding="5dp"
+                app:tint="@color/gray"
                 tools:ignore="NestedWeights" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.1"
-                android:layout_marginBottom="20dp"
-                android:gravity="center"
-                android:text="@string/auto"
-                android:textColor="@color/button_white" />
-            <TextView
-                android:id="@+id/ignition_state_text"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="1dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/rounded_corner_white"
-                android:layout_weight="0.2"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:text="" />
-
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent" />
-
-
-        <FrameLayout
-            android:layout_width="633dp"
-            android:layout_height="match_parent"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/speed_text_view"
-                android:layout_width="match_parent"
-                android:layout_height="515dp"
-                android:gravity="center"
-                android:text=""
-                android:textColor="@color/button_white"
-                android:textSize="72sp" />
-
-            <com.jyjang.carSpeed.ui.SpeedometerView
-                android:layout_width="628dp"
-                android:layout_height="365dp"
-                android:gravity="center">
-
-            </com.jyjang.carSpeed.ui.SpeedometerView>
-        </FrameLayout>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="80"
-        android:orientation="horizontal"
-
-
-        android:weightSum="3">
-
-        <LinearLayout
-            android:id="@+id/gear_button_layout"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.4"
-            android:orientation="vertical"
-            android:weightSum="1"
-            tools:ignore="NestedWeights">
             <ImageView
                 android:id="@+id/charge_port_connect_image"
-                android:layout_marginLeft="50dp"
-                android:layout_marginRight="50dp"
-                android:background="@drawable/rounded_corner_white"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:src="@drawable/ev_charge_image"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.5"
-                tools:ignore="NestedWeights">
-<!--                android:background="@drawable/image_circle"-->
-            </ImageView>
+                android:padding="5dp"
+                app:tint="@color/gray"
+                tools:ignore="NestedWeights" />
+
             <ImageView
                 android:id="@+id/charge_port_open_image"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.5"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="50dp"
-                android:layout_marginRight="50dp"
-                android:src="@drawable/ev_port_image"
-                android:background="@drawable/rounded_corner_white">
-            </ImageView>
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="5dp"
+                app:tint="@color/gray"
+                android:src="@drawable/port_open" />
 
         </LinearLayout>
 
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5">
+            android:layout_weight="1"
+            android:weightSum="4"
+            >
 
-        </LinearLayout>
-
-        <LinearLayout
+            <TextView
+                android:id="@+id/park_gear_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1.5"
-                android:weightSum="1">
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner_background"
+                android:gravity="center"
+                android:text="@string/p"
+                android:textColor="@android:color/white"
+                android:textSize="62sp" />
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.7"
-                    android:weightSum="1">
+            <TextView
+                android:id="@+id/reverse_gear_text"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner_background"
+                android:gravity="center"
+                android:text="@string/r"
+                android:textColor="@android:color/white"
+                android:textSize="62sp" />
 
-                    <TextView
-                        android:id="@+id/park_gear_text"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="30dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:layout_weight="0.25"
-                        android:background="@drawable/rounded_corner_background"
-                        android:gravity="center"
-                        android:text="@string/p"
-                        android:textColor="@android:color/white"
-                        android:textSize="62sp" />
+            <TextView
+                android:id="@+id/neutral_gear_text"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner_background"
+                android:gravity="center"
+                android:text="@string/n"
+                android:textColor="@android:color/white"
+                android:textSize="62sp" />
 
-                    <TextView
-                        android:id="@+id/reverse_gear_text"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="30dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:layout_weight="0.25"
-                        android:background="@drawable/rounded_corner_background"
-                        android:gravity="center"
-                        android:text="@string/r"
-                        android:textColor="@android:color/white"
-                        android:textSize="62sp" />
-
-                    <TextView
-                        android:id="@+id/neutral_gear_text"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="30dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:layout_weight="0.25"
-                        android:background="@drawable/rounded_corner_background"
-                        android:gravity="center"
-                        android:text="@string/n"
-                        android:textColor="@android:color/white"
-                        android:textSize="62sp" />
-
-                    <TextView
-                        android:id="@+id/drive_gear_text"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="30dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:layout_weight="0.25"
-                        android:background="@drawable/rounded_corner_background"
-                        android:gravity="center"
-                        android:text="@string/d"
-                        android:textColor="@android:color/white"
-                        android:textSize="62sp" />
-
-                </LinearLayout>
-            </LinearLayout>
-
+            <TextView
+                android:id="@+id/drive_gear_text"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner_background"
+                android:gravity="center"
+                android:text="@string/d"
+                android:textColor="@android:color/white"
+                android:textSize="62sp" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout >
 
