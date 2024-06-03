@@ -126,16 +126,18 @@ def list():
     except subprocess.TimeoutExpired:
         typer.echo("Error: Command timed out")
 
+@app.command()
+def get_connection(connection_type:str):
+    messages = None
+    messages = connection_instance.get_connection(connection_type)
+    if messages is None:
+        return typer.echo("Error: Connection Setting Error")
+    return typer.echo(messages)
+
 
 @app.command()
-def set_connection(connection_type: str, address: Optional[str], port: Optional[str]):
-    if connection_type == "r" or connection_type == "remote":
-        connection_instance.set_remote_connection(address, port)
-    elif connection_type == "l" or connection_type == "local":
-        connection_instance.set_local_connection(address, port)
-    else:
-        typer.echo("Error: Connection Type error")
-
+def set_connection(connection_type: str, address, port):
+    connection_instance.set_connection(connection_type, address, port)
 
 @app.command()
 def connection(connection_type: str):

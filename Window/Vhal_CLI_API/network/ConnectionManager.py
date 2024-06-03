@@ -1,3 +1,4 @@
+import configparser
 import logging
 import subprocess
 from typing import Optional
@@ -16,15 +17,13 @@ from local_connection_model import local_connection_model
 from remote_connection_model import remote_connection_model
 
 
-
 class ConnectionManager:
     _instance = None
     process = None
 
     def __init__(self):
-        self.ConnectionType: ConnectionType
-        self.local_connection_model: local_connection_model = local_connection_model()
-        self.remote_connection_model: remote_connection_model = remote_connection_model()
+        self.local_connection_model = local_connection_model()
+        self.remote_connection_model = remote_connection_model()
 
     def __new__(cls):
         if cls._instance is None:
@@ -37,14 +36,6 @@ class ConnectionManager:
                                         stderr=subprocess.PIPE,
                                         text=True)
 
-    def set_connection(self, connection_type: str, address: Optional[str], port: Optional[str]):
-        if connection_type == "l" or connection_type == "local":
-            self.set_local_connection(address, port)
-        elif connection_type == "r" or connection_type == "remote":
-            self.set_remote_connection(address, port)
-        else:
-            logging.error("Error: Please enter a valid command")
-
     def change(self):
         type = self.get_connection_type()
         if type == "local":
@@ -55,19 +46,28 @@ class ConnectionManager:
             typer.echo("ADB와 애뮬레이터 연결이 안되어있어 전환을 할 수 없습니다.")
 
     def connection_remote(self):
-        if self.remote_connection_model.get_port() is None or self.remote_connection_model.get_address() is None:
-            typer.echo("Error : Remote connection information is Not True")
-            return
-        command = self.remote_connection_model.get_address() + " : " + self.remote_connection_model.get_port()
-        self.ConnectionType = "remote"
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        ip = config['remote']['ip']
+        port = config['remote']['port']
+        command = ip + " : " + port
+        config['config'] = {'connection_type': 'remote'}
+
         self.run_command(command)
 
     def connection_local(self):
-        if self.local_connection_model.get_port() is None or self.local_connection_model.get_address() is None:
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        ip = config['local']['ip']
+        port = config['local']['port']
+
+        if ip is None or port is None:
             typer.echo("Error : Local connection information is Not True")
             return
-        command = self.local_connection_model.get_address() + " : " + self.local_connection_model.get_port()
-        self.ConnectionType = "local"
+        command = ip + " : " + port
+
+        config['config'] = {'connection_type': 'local'}
+
         self.run_command(command)
 
     def connection(self, connection_type: str):
@@ -76,35 +76,47 @@ class ConnectionManager:
         elif connection_type == "r" or connection_type == "remote":
             self.connection_remote()
 
-    def set_local_connection(self, address: Optional[str], port: Optional[str]):
-        if address is None:
-            self.local_connection_model.set_address("10.10.10.10")
-            typer.echo("Success : Setting local IP : 10.10.10.10")
-        else:
-            self.local_connection_model.set_address(address)
-            typer.echo(f"Success : Setting local IP : {address}")
-
-        if port is None:
-            self.local_connection_model.set_port("8888")
-            typer.echo("Success : Setting local port : 8888")
-        else:
-            self.local_connection_model.set_port(port)
-            typer.echo(f"Success : Setting local port : {port}")
-
-    def set_remote_connection(self, address: Optional[str], port: Optional[str]):
-        self.remote_connection_model.set_address(address)
-        self.remote_connection_model.set_port(port)
-
     def run_command(self, command: str):
         try:
             self.process.stdin.write(command)
-            self.process.stout()
             self.process.stdin.flush()
         except ConnectionError:
             typer.echo("Error : Can't Connect ")
+        finally:
+            typer.echo("Success")
+
+    def set_connection(self, connection_type: str, address, port):
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+
+        if connection_type == 'remote':
+            config['remote'] = {'ip': address, 'port': port}
+            config['connection_type'] = {'type': "remote"}
+        elif connection_type == 'local':
+            config['local'] = {'ip': address, 'port': port}
+            config['connection_type'] = {'type': "local"}
+        else:
+            raise ValueError("Invalid connection type. Use 'remote' or 'local'.")
+
+        with open('config.ini', 'w') as configfile:
+            config.write(configfile)
+
+    def get_connection(self, connection_type: str) -> tuple:
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+
+        if connection_type in config:
+            ip = config[connection_type]['ip']
+            port = int(config[connection_type]['port'])
+            return ip, port
+        else:
+            raise ValueError("Invalid connection type. Use 'remote' or 'local'.")
 
     def get_connection_type(self):
-        return self.ConnectionType.value
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        connection_type = config['connection_type']['type']
+        return connection_type
 
 
 connection_instance = ConnectionManager()
