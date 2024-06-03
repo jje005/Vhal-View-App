@@ -1,8 +1,8 @@
 import configparser
-import logging
 import subprocess
 from typing import Optional
 from enum import Enum
+import typer
 
 
 class ConnectionType(Enum):
@@ -10,20 +10,9 @@ class ConnectionType(Enum):
     REMOTE = "remote"
 
 
-import typer
-
-# local_connection_model.py와 remote_connection_model.py에서 클래스 가져오기
-from local_connection_model import local_connection_model
-from remote_connection_model import remote_connection_model
-
-
 class ConnectionManager:
     _instance = None
     process = None
-
-    def __init__(self):
-        self.local_connection_model = local_connection_model()
-        self.remote_connection_model = remote_connection_model()
 
     def __new__(cls):
         if cls._instance is None:
@@ -37,10 +26,10 @@ class ConnectionManager:
                                         text=True)
 
     def change(self):
-        type = self.get_connection_type()
-        if type == "local":
+        connection_type = self.get_connection_type()
+        if connection_type == "local":
             self.connection_remote()
-        elif type == "remote":
+        elif connection_type == "remote":
             self.connection_local()
         else:
             typer.echo("ADB와 애뮬레이터 연결이 안되어있어 전환을 할 수 없습니다.")
