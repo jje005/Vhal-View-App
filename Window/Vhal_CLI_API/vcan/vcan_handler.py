@@ -6,7 +6,7 @@ import logging
 
 import sys
 sys.path.append("/home/Vhal-View-App/Window/Vhal_CLI_API/")
-from commands.Vhal_api import set_vhal, get_vhal, get_vhal_list, set_vhal_Integer, set_vhal_float, process
+from commands.Vhal_api import set, get, list, set_integer, set_float, process
 
 
 def main():
@@ -37,27 +37,27 @@ def main():
 
                 if prev_ignitionState != ignitionState:
                     prev_ignitionState = ignitionState
-                    set_vhal_Integer(process, "289408009", ignitionState, "0")
+                    set_integer(process, "289408009", ignitionState, "0")
 
                 if prev_gearSelection != gearSelection:
                     prev_gearSelection = gearSelection
-                    set_vhal_Integer(process, "289408009", gearSelection, "0")
+                    set_integer(process, "289408009", gearSelection, "0")
 
                 if prev_vehicleSpeed != vehicleSpeed:
                     prev_vehicleSpeed = vehicleSpeed
-                    set_vhal_float(process, "289408009", vehicleSpeed, "0")
+                    set_float(process, "289408009", vehicleSpeed, "0")
 
                 if prev_chargePortConnection != chargePortConnection:
                     prev_chargePortConnection = chargePortConnection
-                    set_vhal_Integer(process, "289408009", chargePortConnection, "0")
+                    set_integer(process, "289408009", chargePortConnection, "0")
 
                 if prev_ChargePortOpen != ChargePortOpen:
                     prev_ChargePortOpen = ChargePortOpen
-                    set_vhal_Integer(process, "289408009", ChargePortOpen, "0")
+                    set_integer(process, "289408009", ChargePortOpen, "0")
 
                 if prev_parkingBreakAuto != parkingBreakAuto:
                     prev_parkingBreakAuto = parkingBreakAuto
-                    set_vhal_Integer(process, "289408009", parkingBreakAuto, "0")
+                    set_integer(process, "289408009", parkingBreakAuto, "0")
 
 
     except KeyboardInterrupt:
