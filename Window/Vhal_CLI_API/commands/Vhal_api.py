@@ -42,7 +42,7 @@ def set(property_id, value, area_id):
 
 
 @app.command()
-def set_float(property_id: int, value, area_id):
+def set_float(property_id, value, area_id):
     adb_command = f"dumpsys android.hardware.automotive.vehicle.IVehicle/default --set {property_id} -f {value} -a {area_id}\n"
     try:
         process.stdin.write(adb_command)
@@ -52,7 +52,7 @@ def set_float(property_id: int, value, area_id):
 
 
 @app.command()
-def set_integer(property_id, value: int, area_id: int):
+def set_integer(property_id, value, area_id):
     adb_command = f"dumpsys android.hardware.automotive.vehicle.IVehicle/default --set {property_id} -i {value} -a {area_id}"
     try:
         process.stdin.write(adb_command)
@@ -89,7 +89,7 @@ def check_value_type(value_type, value):
 
 
 @app.command()
-def get(property_id: int):
+def get(property_id):
     get_vhal(property_id)
 
 
@@ -129,7 +129,7 @@ def list():
 
 
 @app.command()
-def get_connection(connection_type: str):
+def get_connection(connection_type):
     messages = None
     messages = connection_instance.get_connection(connection_type)
     if messages is None:
@@ -138,12 +138,12 @@ def get_connection(connection_type: str):
 
 
 @app.command()
-def set_connection(connection_type: str, address, port):
+def set_connection(connection_type, address, port):
     connection_instance.set_connection(connection_type, address, port)
 
 
 @app.command()
-def connection(connection_type: str):
+def connection(connection_type):
     if connection_type == "l" or connection_type == "local" or connection_type == "r" or connection_type == "remote":
         connection_instance.connection(connection_type)
     else:

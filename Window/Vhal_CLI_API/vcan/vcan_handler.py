@@ -15,6 +15,7 @@ def main():
         set_connection("remote", address, port)
         connection("remote")
 
+
     bus = can.interface.Bus(channel='vcan0', bustype='socketcan')
 
     prev_ignitionState = 0
@@ -28,7 +29,7 @@ def main():
     inCount = 0
     try:
         while True:
-            logging.info('START CAN BUS REVEIVE')
+            logging.info('START CAN BUS Receive')
             message = bus.recv()  # 100ms 타임아웃 설정
 
             if message:
@@ -41,28 +42,27 @@ def main():
 
                 if prev_ignitionState != ignitionState:
                     prev_ignitionState = ignitionState
-                    set_integer(process, "289408009", ignitionState, "0")
+                    set_integer("289408009", ignitionState, "0")
 
                 if prev_gearSelection != gearSelection:
                     prev_gearSelection = gearSelection
-                    set_integer(process, "289408009", gearSelection, "0")
+                    set_integer("289408000", gearSelection, "0")
 
                 if prev_vehicleSpeed != vehicleSpeed:
                     prev_vehicleSpeed = vehicleSpeed
-                    set_float(process, "289408009", vehicleSpeed, "0")
+                    set_float("291504648 ", vehicleSpeed, "0")
 
                 if prev_chargePortConnection != chargePortConnection:
                     prev_chargePortConnection = chargePortConnection
-                    set_integer(process, "289408009", chargePortConnection, "0")
+                    set_integer("287310603", chargePortConnection, "0")
 
                 if prev_ChargePortOpen != ChargePortOpen:
                     prev_ChargePortOpen = ChargePortOpen
-                    set_integer(process, "289408009", ChargePortOpen, "0")
+                    set_integer("287310602", ChargePortOpen, "0")
 
                 if prev_parkingBreakAuto != parkingBreakAuto:
                     prev_parkingBreakAuto = parkingBreakAuto
-                    set_integer(process, "289408009", parkingBreakAuto, "0")
-
+                    set_integer( "287310851", parkingBreakAuto, "0")
 
     except KeyboardInterrupt:
         pass
