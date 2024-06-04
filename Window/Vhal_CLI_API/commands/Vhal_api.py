@@ -15,6 +15,7 @@ from model import Vehiclepropvaluelist
 
 #sys.path.append("D:/00.Project/SDV/Vhal-View-App/Window/Vhal_CLI_API/network")
 from network import ConnectionManager
+from network.ConnectionManager import connection_instance
 
 process = subprocess.Popen(['adb', 'shell'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                            text=True)
@@ -130,7 +131,7 @@ def list():
 @app.command()
 def get_connection(connection_type: str):
     messages = None
-    messages = ConnectionManager().connection_instance.get_connection(connection_type)
+    messages = connection_instance.get_connection(connection_type)
     if messages is None:
         return typer.echo("Error: Connection Setting Error")
     return typer.echo(messages)
@@ -138,13 +139,13 @@ def get_connection(connection_type: str):
 
 @app.command()
 def set_connection(connection_type: str, address, port):
-    ConnectionManager().connection_instance.set_connection(connection_type, address, port)
+    connection_instance.set_connection(connection_type, address, port)
 
 
 @app.command()
 def connection(connection_type: str):
     if connection_type == "l" or connection_type == "local" or connection_type == "r" or connection_type == "remote":
-        ConnectionManager().connection_instance.connection(connection_type)
+        connection_instance.connection(connection_type)
     else:
         typer.echo("Error : Connection Type error ")
 

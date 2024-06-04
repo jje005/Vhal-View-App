@@ -49,10 +49,9 @@ class ConnectionManager:
         config.read('config.ini')
         ip = config['remote']['ip']
         port = config['remote']['port']
-        command = ip + " : " + port
+        command = ip + ":" + port
         config['config'] = {'connection_type': 'remote'}
-
-        self.run_command(command)
+        subprocess.run(f"adb connect {ip}:{port}")
 
     ## 현재 미사용
     def connection_local(self):
@@ -64,7 +63,7 @@ class ConnectionManager:
         if ip is None or port is None:
             typer.echo("Error : Local connection information is Not True")
             return
-        command = ip + " : " + port
+        command = " " +ip + ":" + port
 
         config['config'] = {'connection_type': 'local'}
 
@@ -81,6 +80,7 @@ class ConnectionManager:
         try:
             self.process.stdin.write(command)
             self.process.stdin.flush()
+            result = self.process.communicate()
         except ConnectionError:
             typer.echo("Error : Can't Connect ")
         finally:
