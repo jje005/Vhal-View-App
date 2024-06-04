@@ -1,7 +1,6 @@
 import logging
-import os
 import subprocess
-import sys
+import sys, os
 from typing import Optional
 
 import typer
@@ -11,11 +10,11 @@ app = typer.Typer()
 connection_app = typer.Typer()
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
-from VehiclePropValue import VehiclePropValue
-from VehiclePropValueList import Vehiclepropvaluelist
+from model import VehiclePropValue
+from model import Vehiclepropvaluelist
 
 #sys.path.append("D:/00.Project/SDV/Vhal-View-App/Window/Vhal_CLI_API/network")
-from ConnectionManager import connection_instance
+from network import ConnectionManager
 
 process = subprocess.Popen(['adb', 'shell'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                            text=True)
@@ -127,10 +126,11 @@ def list():
     except subprocess.TimeoutExpired:
         typer.echo("Error: Command timed out")
 
+
 @app.command()
-def get_connection(connection_type:str):
+def get_connection(connection_type: str):
     messages = None
-    messages = connection_instance.get_connection(connection_type)
+    messages = ConnectionManager().connection_instance.get_connection(connection_type)
     if messages is None:
         return typer.echo("Error: Connection Setting Error")
     return typer.echo(messages)
@@ -138,19 +138,20 @@ def get_connection(connection_type:str):
 
 @app.command()
 def set_connection(connection_type: str, address, port):
-    connection_instance.set_connection(connection_type, address, port)
+    ConnectionManager().connection_instance.set_connection(connection_type, address, port)
+
 
 @app.command()
 def connection(connection_type: str):
     if connection_type == "l" or connection_type == "local" or connection_type == "r" or connection_type == "remote":
-        connection_instance.connection(connection_type)
+        ConnectionManager().connection_instance.connection(connection_type)
     else:
         typer.echo("Error : Connection Type error ")
 
 
-@app.command()
-def change():
-    connection_instance.change()
+# @app.command()
+# def change():
+#     connection_instance.change()
 
 
 def set_value_type(value_type):

@@ -1,6 +1,3 @@
-import VehiclePropValue
-
-
 class Vehiclepropvaluelist:
     def __init__(self, properties_id, vehicle_prop_values=None):
         self.vehiclePropValues = vehicle_prop_values if vehicle_prop_values is not None else []
