@@ -26,6 +26,7 @@ class ConnectionManager:
                                         text=True)
 
     def change(self):
+        self.disconnection()
         connection_type = self.get_connection_type()
         if connection_type == "local":
             self.connection_remote()
@@ -33,6 +34,16 @@ class ConnectionManager:
             self.connection_local()
         else:
             typer.echo("ADB와 애뮬레이터 연결이 안되어있어 전환을 할 수 없습니다.")
+
+    def disconnection(self):
+        connection_type = self.get_connection_type()
+        command = "adb disconnect"
+        ip, port = self.get_connection(connection_type)
+        command += f"{ip}:{port}"
+        typer.echo(f"{connection_type}와 ADB 연결을 종료하겠습니다.")
+        subprocess.run(command, capture_output=True, shell=True)
+
+
 
     def connection_remote(self):
         config = configparser.ConfigParser()
