@@ -1,4 +1,3 @@
-# VehiclePropValueModel.py
 class VehiclePropValueModel:
     def __init__(self, vehicle_prop_value_list=None):
         self.VehiclePropValueList = vehicle_prop_value_list if vehicle_prop_value_list is not None else []

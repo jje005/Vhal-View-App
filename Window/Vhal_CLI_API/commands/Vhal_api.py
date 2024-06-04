@@ -1,4 +1,5 @@
 import logging
+import os
 import subprocess
 import sys
 from typing import Optional
@@ -8,12 +9,12 @@ import typer
 #CLI 라이브러리
 app = typer.Typer()
 connection_app = typer.Typer()
-sys.path.append("D:/00.Project/SDV/Vhal-View-App/Window/Vhal_CLI_API/model")
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 from VehiclePropValue import VehiclePropValue
 from VehiclePropValueList import Vehiclepropvaluelist
 
-sys.path.append("D:/00.Project/SDV/Vhal-View-App/Window/Vhal_CLI_API/network")
+#sys.path.append("D:/00.Project/SDV/Vhal-View-App/Window/Vhal_CLI_API/network")
 from ConnectionManager import connection_instance
 
 process = subprocess.Popen(['adb', 'shell'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,

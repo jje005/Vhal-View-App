@@ -1,8 +1,4 @@
-# VehiclePropValueList.py
-
-import sys
-
-sys.path.append("/home/Vhal-View-App/Window/Vhal_CLI_API/model/vehiclePropValue")
+import VehiclePropValue
 
 
 class Vehiclepropvaluelist:

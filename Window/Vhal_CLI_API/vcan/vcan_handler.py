@@ -1,11 +1,11 @@
-import subprocess
-import re
 import can
-import time
 import logging
-
+import os
 import sys
-sys.path.append("/home/Vhal-View-App/Window/Vhal_CLI_API/")
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+
+
+#sys.path.append("/home/Vhal-View-App/Window/Vhal_CLI_API/")
 from commands.Vhal_api import set, get, list, set_integer, set_float, process
 
 

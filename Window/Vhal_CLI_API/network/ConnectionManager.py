@@ -1,6 +1,5 @@
 import configparser
 import subprocess
-from typing import Optional
 from enum import Enum
 import typer
 
