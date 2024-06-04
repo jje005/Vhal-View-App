@@ -51,7 +51,14 @@ class ConnectionManager:
         port = config['remote']['port']
         command = ip + ":" + port
         config['config'] = {'connection_type': 'remote'}
-        subprocess.run(f"adb connect {ip}:{port}")
+        try:
+            subprocess.run(f"adb connect {ip}:{port}")
+        except ValueError:
+            typer.echo("Error : Unable to connect. Please check the IP address and port, then proceed with set-connect.")
+        finally:
+            typer.echo(
+                "Success : Successfully connected remotely.")
+
 
     ## 현재 미사용
     def connection_local(self):
