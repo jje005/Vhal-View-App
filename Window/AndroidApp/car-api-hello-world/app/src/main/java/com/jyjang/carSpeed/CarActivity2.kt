@@ -196,7 +196,7 @@ class CarActivity2 : AppCompatActivity() {
             override fun onErrorEvent(propId: Int, zone: Int) {
                 Log.e(TAG, "Error event for property ID: $propId, zone: $zone")
             }
-        }, VehiclePropertyIds.PERF_VEHICLE_SPEED, CarPropertyManager.SENSOR_RATE_NORMAL)
+        }, VehiclePropertyIds.PERF_VEHICLE_SPEED_DISPLAY, CarPropertyManager.SENSOR_RATE_NORMAL)
 
         // IGNITION_STATE
         mCarPropertyManager.registerCallback(object : CarPropertyManager.CarPropertyEventCallback {
