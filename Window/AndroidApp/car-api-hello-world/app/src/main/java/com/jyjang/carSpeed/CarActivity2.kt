@@ -21,8 +21,8 @@ import com.github.anastr.speedviewlib.AwesomeSpeedometer
 
 class CarActivity2 : AppCompatActivity() {
 
-    private val YELLOW = Color.parseColor("#FFFF00")
-    private val WHITE = Color.parseColor("#FFFFFF")
+    private val YELLOW = Color.parseColor("#FFFF00") // 노란색
+    private val WHITE = Color.parseColor("#FFFFFF") // 하얀색
 
     private lateinit var mCarPropertyManager: CarPropertyManager
 
@@ -35,6 +35,7 @@ class CarActivity2 : AppCompatActivity() {
     private lateinit var driveGearImage: TextView
     private lateinit var neutralGearImage: TextView
 
+    private lateinit var speedTextView: TextView
     private lateinit var ignitionTextView: TextView
 
     companion object {
@@ -58,13 +59,14 @@ class CarActivity2 : AppCompatActivity() {
         driveGearImage = findViewById(R.id.drive_gear_text)
         neutralGearImage = findViewById(R.id.neutral_gear_text)
 
+//        speedTextView = findViewById(R.id.speed_text_view)
         ignitionTextView = findViewById(R.id.ignition_state_text)
 
         main()
     }
 
     private fun checkDangerousPermissions(): List<String> {
-        val permissions = mutableListOf<String>()
+        val permissions = ArrayList<String>()
 
         if (checkSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) != PackageManager.PERMISSION_GRANTED) {
             permissions.add(Manifest.permission.WRITE_SECURE_SETTINGS)
@@ -97,7 +99,6 @@ class CarActivity2 : AppCompatActivity() {
         if (checkSelfPermission(Car.PERMISSION_USE_REMOTE_ACCESS) != PackageManager.PERMISSION_GRANTED) {
             permissions.add(Car.PERMISSION_USE_REMOTE_ACCESS)
         }
-
         return permissions
     }
 
@@ -107,6 +108,7 @@ class CarActivity2 : AppCompatActivity() {
 
     private fun initCarPropertyManager() {
         val mCar = Car.createCar(this)
+
         mCarPropertyManager = mCar.getCarManager(Car.PROPERTY_SERVICE) as CarPropertyManager
     }
 
@@ -116,7 +118,7 @@ class CarActivity2 : AppCompatActivity() {
         for (config in mCarPropertyManager.propertyList) {
             Log.d(TAG, config.propertyId.toString())
         }
-        Log.d(TAG, "CarPropertyConfig List Size : ${mCarPropertyManager.propertyList.size}")
+        Log.d(TAG, "CarPropertyConfig List Size : " + mCarPropertyManager.propertyList.size)
 
         registerCallback()
     }
@@ -186,6 +188,9 @@ class CarActivity2 : AppCompatActivity() {
                 Log.d(TAG, "$propertyId (PERF_VEHICLE_SPEED)is Change $propertyValue")
                 val awesomeSpeedometer = findViewById<AwesomeSpeedometer>(R.id.awesomeSpeedometer)
                 awesomeSpeedometer.speedTo(propertyValue)
+
+                val speedometerValue = findViewById<TextView>(R.id.speedometerValue)
+                animateSpeedometerValue(speedometerValue, propertyValue)
             }
 
             override fun onErrorEvent(propId: Int, zone: Int) {
@@ -208,9 +213,27 @@ class CarActivity2 : AppCompatActivity() {
         }, VehiclePropertyIds.IGNITION_STATE, CarPropertyManager.SENSOR_RATE_NORMAL)
     }
 
-    private fun setImageViewPropValue(imageView: ImageView, value: Boolean) {
+    // 애니메이션 메서드
+    private fun animateSpeedometerValue(speedometerValue: TextView, newValue: Float) {
+        val currentSpeedText = speedometerValue.text.toString()
+        val currentSpeed: Float = try {
+            currentSpeedText.toFloat()
+        } catch (e: NumberFormatException) {
+            0f
+        }
+
+        val animator = ValueAnimator.ofFloat(currentSpeed, newValue)
+        animator.duration = 1000 // 애니메이션 지속 시간 (밀리초)
+        animator.addUpdateListener { animation ->
+            val animatedValue = animation.animatedValue as Float
+            speedometerValue.text = String.format("%.1f", animatedValue)
+        }
+        animator.start()
+    }
+
+    fun setImageViewPropValue(imageView: ImageView, value: Boolean) {
         if (!value) {
-            val color = Color.parseColor("#00BFFF")
+            val color = Color.parseColor("#00BFFF") // 파란색
             val colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP)
             imageView.colorFilter = colorFilter
             return
@@ -218,26 +241,30 @@ class CarActivity2 : AppCompatActivity() {
         imageView.colorFilter = null
     }
 
-    private fun setGearButtonColorFilter(value: Int) {
+    fun setGearButtonColorFilter(value: Int) {
         when (value) {
+            // N
             1 -> {
                 parkGearImage.setTextColor(WHITE)
                 reverseGearImage.setTextColor(WHITE)
                 driveGearImage.setTextColor(WHITE)
                 neutralGearImage.setTextColor(YELLOW)
             }
+            // R
             2 -> {
                 parkGearImage.setTextColor(WHITE)
                 reverseGearImage.setTextColor(YELLOW)
                 driveGearImage.setTextColor(WHITE)
                 neutralGearImage.setTextColor(WHITE)
             }
+            // P
             4 -> {
                 parkGearImage.setTextColor(YELLOW)
                 reverseGearImage.setTextColor(WHITE)
                 driveGearImage.setTextColor(WHITE)
                 neutralGearImage.setTextColor(WHITE)
             }
+            // D
             8 -> {
                 parkGearImage.setTextColor(WHITE)
                 reverseGearImage.setTextColor(WHITE)
@@ -247,13 +274,36 @@ class CarActivity2 : AppCompatActivity() {
         }
     }
 
+    fun setCarSpeedValue(textView: TextView, newValue: Float) {
+        val currentSpeedText = textView.text.toString()
+        val currentSpeed: Int = try {
+            currentSpeedText.toInt()
+        } catch (e: NumberFormatException) {
+            0
+        }
 
-    private fun setIgnitionState(textView: TextView, value: Int) {
+        val newSpeed = newValue.toInt()
+
+        val animator = ValueAnimator.ofInt(currentSpeed, newSpeed)
+        animator.duration = 700
+        animator.addUpdateListener { animation ->
+            val animatedValue = animation.animatedValue as Int
+            textView.text = animatedValue.toString()
+        }
+        animator.start()
+    }
+
+    fun setIgnitionState(textView: TextView, value: Int) {
         when (value) {
+            // lock
             1 -> textView.setText(R.string.lock)
+            // OFF
             2 -> textView.setText(R.string.off)
+            // ACC
             3 -> textView.setText(R.string.acc)
+            // ON
             4 -> textView.setText(R.string.on)
+            // START
             5 -> textView.setText(R.string.start)
         }
     }
