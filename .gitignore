@@ -1,0 +1,4 @@
+Window/Vhal_CLI_API/model/__pycache__/VehiclePropValueList.cpython-312.pyc
+Window/Vhal_CLI_API/commands/__pycache__/Vhal_api.cpython-312.pyc
+*.pyc
+Window/Vhal_CLI_API/build/
