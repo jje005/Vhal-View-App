@@ -3,17 +3,21 @@ import logging
 import os
 import sys
 
-sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+##Window용
+#sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+
+##Docker용
+sys.path.append("/home/Vhal-View-App/Window/Vhal_CLI_API")
 from commands.Vhal_api import set, get, list, set_integer, set_float, process, set_connection, connection
 
 
 def main():
-    user_select_emulator = input("Trying to connect to the remote emulator? (y/n)")
-    if user_select_emulator == "yes" or user_select_emulator == "y" or user_select_emulator == "YES" or user_select_emulator == "Y":
-        address = input("Please enter the IP address (ex:10.10.10.10)")
-        port = input("Please enter the port address[4]")
-        set_connection("remote", address, port)
-        connection("remote")
+    #user_select_emulator = input("Trying to connect to the remote emulator? (y/n)")
+    #if user_select_emulator == "yes" or user_select_emulator == "y" or user_select_emulator == "YES" or user_select_emulator == "Y":
+     #   address = input("Please enter the IP address (ex:10.10.10.10)")
+        #port = input("Please enter the port address[4]")
+        #set_connection("remote", address, port)
+        #connection("remote")
 
 
     bus = can.interface.Bus(channel='vcan0', bustype='socketcan')
