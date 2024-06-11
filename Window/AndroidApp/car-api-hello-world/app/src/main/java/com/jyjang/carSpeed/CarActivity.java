@@ -27,9 +27,9 @@ import java.util.List;
 
 public class CarActivity extends AppCompatActivity {
 
-    private final int YELLOW = Color.parseColor("#FFFF00"); // 노란
-    private final int WHITE = Color.parseColor("#FFFFFF"); // 하양 
-    
+    private final int YELLOW = Color.parseColor("#FFFF00"); // 노란색
+    private final int WHITE = Color.parseColor("#FFFFFF"); // 하얀색
+
     private static CarPropertyManager mCarPropertyManager;
 
     private ImageView chargePortConnectImage;
@@ -44,12 +44,11 @@ public class CarActivity extends AppCompatActivity {
     private TextView speedTextView;
     private TextView ignitionTextView;
 
-    private static  final  String TAG = "CarActivity";
-    private  static  final  int PERMISSION_REQUEST_CODE = 100;
+    private static final String TAG = "CarActivity";
+    private static final int PERMISSION_REQUEST_CODE = 100;
 
     public CarActivity() {
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +57,6 @@ public class CarActivity extends AppCompatActivity {
         List<String> dangPermToRequest = checkDangerousPermissions();
         requestDangerousPermissions(dangPermToRequest);
         setContentView(R.layout.car_action_activity);
-
 
         chargePortOpenImage = findViewById(R.id.charge_port_open_image);
         chargePortConnectImage = findViewById(R.id.charge_port_connect_image);
@@ -76,7 +74,7 @@ public class CarActivity extends AppCompatActivity {
     }
 
     private List<String> checkDangerousPermissions() {
-        List<String> permissions = new ArrayList<String>();
+        List<String> permissions = new ArrayList<>();
 
         if (checkSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) != PackageManager.PERMISSION_GRANTED) {
             permissions.add(Manifest.permission.WRITE_SECURE_SETTINGS);
@@ -115,6 +113,7 @@ public class CarActivity extends AppCompatActivity {
     private void requestDangerousPermissions(List<String> permissions) {
         requestPermissions(permissions.toArray(new String[0]), PERMISSION_REQUEST_CODE);
     }
+
     private void initCarPropertyManager() {
         Car mCar = Car.createCar(this);
 
@@ -126,15 +125,14 @@ public class CarActivity extends AppCompatActivity {
 
         for(CarPropertyConfig config : mCarPropertyManager.getPropertyList()){
             Log.d(TAG, String.valueOf(config.getPropertyId()));
-        };
-        Log.d(TAG, "CarPropertyConfig List Size : "+String.valueOf(mCarPropertyManager.getPropertyList().size()));
+        }
+        Log.d(TAG, "CarPropertyConfig List Size : " + mCarPropertyManager.getPropertyList().size());
 
         registerCallback();
     }
 
-
     private void registerCallback(){
-        //EV_CHARGE_PORT_OPEN
+        // EV_CHARGE_PORT_OPEN
         mCarPropertyManager.registerCallback(new CarPropertyManager.CarPropertyEventCallback() {
             @Override
             public void onChangeEvent(CarPropertyValue carPropertyValue) {
@@ -150,7 +148,7 @@ public class CarActivity extends AppCompatActivity {
             }
         }, VehiclePropertyIds.EV_CHARGE_PORT_OPEN, CarPropertyManager.SENSOR_RATE_NORMAL);
 
-        //EV_CHARGE_PORT_CONNECTED
+        // EV_CHARGE_PORT_CONNECTED
         mCarPropertyManager.registerCallback(new CarPropertyManager.CarPropertyEventCallback() {
             @Override
             public void onChangeEvent(CarPropertyValue carPropertyValue) {
@@ -166,7 +164,7 @@ public class CarActivity extends AppCompatActivity {
             }
         }, VehiclePropertyIds.EV_CHARGE_PORT_CONNECTED, CarPropertyManager.SENSOR_RATE_NORMAL);
 
-        //PARKING_BRAKE_AUTO_APPLY
+        // PARKING_BRAKE_AUTO_APPLY
         mCarPropertyManager.registerCallback(new CarPropertyManager.CarPropertyEventCallback() {
             @Override
             public void onChangeEvent(CarPropertyValue carPropertyValue) {
@@ -182,14 +180,14 @@ public class CarActivity extends AppCompatActivity {
             }
         }, VehiclePropertyIds.PARKING_BRAKE_AUTO_APPLY, CarPropertyManager.SENSOR_RATE_NORMAL);
 
-        //GEAR_SELECTION
+        // GEAR_SELECTION
         mCarPropertyManager.registerCallback(new CarPropertyManager.CarPropertyEventCallback() {
             @Override
             public void onChangeEvent(CarPropertyValue carPropertyValue) {
                 int propertyId = carPropertyValue.getPropertyId();
                 Object propertyValue = carPropertyValue.getValue();
                 Log.d(TAG, propertyId + "(GEAR_SELECTION)is Change " + propertyValue);
-                setGearButtonColorFilter((Integer)propertyValue);
+                setGearButtonColorFilter((Integer) propertyValue);
             }
 
             @Override
@@ -198,16 +196,18 @@ public class CarActivity extends AppCompatActivity {
             }
         }, VehiclePropertyIds.GEAR_SELECTION, CarPropertyManager.SENSOR_RATE_NORMAL);
 
-        //PERF_VEHICLE_SPEED
+        // PERF_VEHICLE_SPEED
         mCarPropertyManager.registerCallback(new CarPropertyManager.CarPropertyEventCallback() {
             @Override
             public void onChangeEvent(CarPropertyValue carPropertyValue) {
                 int propertyId = carPropertyValue.getPropertyId();
                 Object propertyValue = carPropertyValue.getValue();
                 Log.d(TAG, propertyId + "(PERF_VEHICLE_SPEED)is Change " + propertyValue);
-                AwesomeSpeedometer awesomeSpeedometer= (AwesomeSpeedometer) findViewById(R.id.awesomeSpeedometer);
-                awesomeSpeedometer.speedTo((float)propertyValue);
-//                setCarSpeedValue(speedTextView,(float)propertyValue);
+                AwesomeSpeedometer awesomeSpeedometer = findViewById(R.id.awesomeSpeedometer);
+                awesomeSpeedometer.speedTo((float) propertyValue);
+
+                TextView speedometerValue = findViewById(R.id.speedometerValue);
+                animateSpeedometerValue(speedometerValue, (float) propertyValue);
             }
 
             @Override
@@ -216,7 +216,7 @@ public class CarActivity extends AppCompatActivity {
             }
         }, VehiclePropertyIds.PERF_VEHICLE_SPEED_DISPLAY, CarPropertyManager.SENSOR_RATE_NORMAL);
 
-        //IGNITION_STATE
+        // IGNITION_STATE
         mCarPropertyManager.registerCallback(new CarPropertyManager.CarPropertyEventCallback() {
             @Override
             public void onChangeEvent(CarPropertyValue carPropertyValue) {
@@ -233,6 +233,29 @@ public class CarActivity extends AppCompatActivity {
         }, VehiclePropertyIds.IGNITION_STATE, CarPropertyManager.SENSOR_RATE_NORMAL);
     }
 
+    // 애니메이션 메서드
+    private void animateSpeedometerValue(TextView speedometerValue, float newValue) {
+        String currentSpeedText = speedometerValue.getText().toString();
+        float currentSpeed;
+
+        try {
+            currentSpeed = Float.parseFloat(currentSpeedText);
+        } catch (NumberFormatException e) {
+            currentSpeed = 0f;
+        }
+
+        ValueAnimator animator = ValueAnimator.ofFloat(currentSpeed, newValue);
+        animator.setDuration(1000); // 애니메이션 지속 시간 (밀리초)
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float animatedValue = (float) animation.getAnimatedValue();
+                speedometerValue.setText(String.format("%.1f", animatedValue));
+            }
+        });
+        animator.start();
+    }
+
 
     public void setImageViewPropValue(ImageView imageView, boolean value){
         if(!value){
@@ -244,31 +267,30 @@ public class CarActivity extends AppCompatActivity {
         imageView.setColorFilter(null);
     }
 
-
     public void setGearButtonColorFilter(int value){
         switch (value){
-            //N
+            // N
             case 1 :
                 parkGearImage.setTextColor(WHITE);
                 reverseGearImage.setTextColor(WHITE);
                 driveGearImage.setTextColor(WHITE);
                 neutralGearImage.setTextColor(YELLOW);
                 break;
-            //R
+            // R
             case 2 :
                 parkGearImage.setTextColor(WHITE);
                 reverseGearImage.setTextColor(YELLOW);
                 driveGearImage.setTextColor(WHITE);
                 neutralGearImage.setTextColor(WHITE);
                 break;
-            //P
+            // P
             case 4 :
                 parkGearImage.setTextColor(YELLOW);
                 reverseGearImage.setTextColor(WHITE);
                 driveGearImage.setTextColor(WHITE);
                 neutralGearImage.setTextColor(WHITE);
                 break;
-            //D
+            // D
             case 8 :
                 parkGearImage.setTextColor(WHITE);
                 reverseGearImage.setTextColor(WHITE);
@@ -304,23 +326,23 @@ public class CarActivity extends AppCompatActivity {
 
     public void setIgnitionState(TextView textView, int value){
         switch (value){
-            //lock
+            // lock
             case 1 :
                 textView.setText(R.string.lock);
                 break;
-            //OFF
+            // OFF
             case 2 :
                 textView.setText(R.string.off);
                 break;
-            //ACC
+            // ACC
             case 3 :
                 textView.setText(R.string.acc);
                 break;
-            //ON
+            // ON
             case 4 :
                 textView.setText(R.string.on);
                 break;
-            //START
+            // START
             case 5 :
                 textView.setText(R.string.start);
                 break;
