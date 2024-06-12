@@ -38,6 +38,9 @@ class CarActivity2 : AppCompatActivity() {
     private lateinit var speedTextView: TextView
     private lateinit var ignitionTextView: TextView
 
+    private lateinit var evBatteryTextView: TextView
+    private lateinit var evChargeTimeRemaining: TextView
+
     companion object {
         private const val TAG = "CarActivity"
         private const val PERMISSION_REQUEST_CODE = 100
@@ -60,7 +63,11 @@ class CarActivity2 : AppCompatActivity() {
         neutralGearImage = findViewById(R.id.neutral_gear_text)
 
 //        speedTextView = findViewById(R.id.speed_text_view)
+
         ignitionTextView = findViewById(R.id.ignition_state_text)
+
+        evBatteryTextView = findViewById(R.id.ev_battery_textview)
+        evChargeTimeRemaining = findViewById(R.id.ev_charge_time_remaining)
 
         main()
     }
@@ -99,6 +106,11 @@ class CarActivity2 : AppCompatActivity() {
         if (checkSelfPermission(Car.PERMISSION_USE_REMOTE_ACCESS) != PackageManager.PERMISSION_GRANTED) {
             permissions.add(Car.PERMISSION_USE_REMOTE_ACCESS)
         }
+
+        if (checkSelfPermission(Car.PERMISSION_ENERGY) != PackageManager.PERMISSION_GRANTED) {
+            permissions.add(Car.PERMISSION_ENERGY)
+        }
+
         return permissions
     }
 
@@ -110,6 +122,7 @@ class CarActivity2 : AppCompatActivity() {
         val mCar = Car.createCar(this)
 
         mCarPropertyManager = mCar.getCarManager(Car.PROPERTY_SERVICE) as CarPropertyManager
+//        mCarPropertyManager.setFloatProperty(291504905, 0, 100.0F)
     }
 
     private fun main() {
@@ -211,6 +224,37 @@ class CarActivity2 : AppCompatActivity() {
                 Log.e(TAG, "Error event for property ID: $propId, zone: $zone")
             }
         }, VehiclePropertyIds.IGNITION_STATE, CarPropertyManager.SENSOR_RATE_NORMAL)
+
+        // EV_BATTETY_LEVEL
+        mCarPropertyManager.registerCallback(object : CarPropertyManager.CarPropertyEventCallback {
+            override fun onChangeEvent(carPropertyValue: CarPropertyValue<*>) {
+                val evCurrentBattery = mCarPropertyManager.getFloatProperty(VehiclePropertyIds.INFO_EV_BATTERY_CAPACITY, 0)
+                Log.d(TAG,"(EV_CURRENT_BATTERY_CAPACITY) is value $evCurrentBattery")
+                val propertyId = carPropertyValue.propertyId
+                val propertyValue = carPropertyValue.value as Float
+                Log.d(TAG, "$propertyId (EV_BATTERY_LEVEL)is Change $propertyValue")
+                val batteryTotal = (propertyValue/evCurrentBattery)*100
+                evBatteryTextView.text = batteryTotal.toString()
+            }
+
+            override fun onErrorEvent(propId: Int, zone: Int) {
+                Log.e(TAG, "Error event for property ID: $propId, zone: $zone")
+            }
+        }, VehiclePropertyIds.EV_BATTERY_LEVEL, CarPropertyManager.SENSOR_RATE_NORMAL)
+
+        // EV_CHARGE_TIME_REMAINING
+        mCarPropertyManager.registerCallback(object : CarPropertyManager.CarPropertyEventCallback {
+            override fun onChangeEvent(carPropertyValue: CarPropertyValue<*>) {
+                val propertyId = carPropertyValue.propertyId
+                val propertyValue = carPropertyValue.value as Int
+                Log.d(TAG, "$propertyId (EV_CHARGE_TIME_REMAINING)is Change $propertyValue")
+                evChargeTimeRemaining.text = propertyValue.toString()
+            }
+
+            override fun onErrorEvent(propId: Int, zone: Int) {
+                Log.e(TAG, "Error event for property ID: $propId, zone: $zone")
+            }
+        }, VehiclePropertyIds.EV_CHARGE_TIME_REMAINING, CarPropertyManager.SENSOR_RATE_NORMAL)
     }
 
     // 애니메이션 메서드

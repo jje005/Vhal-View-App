@@ -9,10 +9,16 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <!-- GEAR_SELECTION -->
     <uses-permission android:name="android.car.permission.CAR_POWERTRAIN" />
+    <!--EV battery_Level, EV_CHARGE_TIME_REMAINING-->
+    <uses-permission android:name="android.car.permission.CAR_ENERGY" />
     <!-- FUEL_DOOR_OPEN -->
     <uses-permission android:name="android.car.permission.CAR_ENERGY_PORTS" />
     <!-- CAR_TIRES -->
     <uses-permission android:name="android.car.permission.CAR_TIRES" />
+    <!-- INFO_EV_BATTETY_CAPACITY-->
+    <uses-permission android:name="android.car.permission.CAR_INFO" />
+    <!-- EV battery, Fuel Volume, tire Pressure-->
+    <uses-permission android:name="android.car.permission.READ_CAR_DISPLAY_UNITS" />
 
     <!-- PERF_VEHICLE_SPEED -->
     <uses-permission android:name="android.car.permission.CAR_SPEED" />
