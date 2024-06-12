@@ -29,6 +29,7 @@ class CarActivity2 : AppCompatActivity() {
     private lateinit var chargePortConnectImage: ImageView
     private lateinit var chargePortOpenImage: ImageView
     private lateinit var autoParkingImage: ImageView
+    private lateinit var batteryImage: ImageView
 
     private lateinit var parkGearImage: TextView
     private lateinit var reverseGearImage: TextView
@@ -56,13 +57,12 @@ class CarActivity2 : AppCompatActivity() {
         chargePortOpenImage = findViewById(R.id.charge_port_open_image)
         chargePortConnectImage = findViewById(R.id.charge_port_connect_image)
         autoParkingImage = findViewById(R.id.auto_parking_image)
+        batteryImage = findViewById(R.id.battery)
 
         parkGearImage = findViewById(R.id.park_gear_text)
         reverseGearImage = findViewById(R.id.reverse_gear_text)
         driveGearImage = findViewById(R.id.drive_gear_text)
         neutralGearImage = findViewById(R.id.neutral_gear_text)
-
-//        speedTextView = findViewById(R.id.speed_text_view)
 
         ignitionTextView = findViewById(R.id.ignition_state_text)
 
@@ -122,7 +122,6 @@ class CarActivity2 : AppCompatActivity() {
         val mCar = Car.createCar(this)
 
         mCarPropertyManager = mCar.getCarManager(Car.PROPERTY_SERVICE) as CarPropertyManager
-//        mCarPropertyManager.setFloatProperty(291504905, 0, 100.0F)
     }
 
     private fun main() {
@@ -225,16 +224,28 @@ class CarActivity2 : AppCompatActivity() {
             }
         }, VehiclePropertyIds.IGNITION_STATE, CarPropertyManager.SENSOR_RATE_NORMAL)
 
-        // EV_BATTETY_LEVEL
+        // EV_BATTERY_LEVEL
         mCarPropertyManager.registerCallback(object : CarPropertyManager.CarPropertyEventCallback {
             override fun onChangeEvent(carPropertyValue: CarPropertyValue<*>) {
                 val evCurrentBattery = mCarPropertyManager.getFloatProperty(VehiclePropertyIds.INFO_EV_BATTERY_CAPACITY, 0)
-                Log.d(TAG,"(EV_CURRENT_BATTERY_CAPACITY) is value $evCurrentBattery")
+                Log.d(TAG, "(EV_CURRENT_BATTERY_CAPACITY) is value $evCurrentBattery")
                 val propertyId = carPropertyValue.propertyId
                 val propertyValue = carPropertyValue.value as Float
-                Log.d(TAG, "$propertyId (EV_BATTERY_LEVEL)is Change $propertyValue")
-                val batteryTotal = (propertyValue/evCurrentBattery)*100
-                evBatteryTextView.text = batteryTotal.toString()
+                Log.d(TAG, "$propertyId (EV_BATTERY_LEVEL) is Change $propertyValue")
+                val batteryTotal = (propertyValue / evCurrentBattery) * 100
+                val batteryPercentage = batteryTotal.toInt()
+                evBatteryTextView.text = batteryPercentage.toString()
+
+                // 배터리 수준에 따라 텍스트 및 이미지 색상 변경
+                if (isCharging() == 1) {
+                    val blueColor = Color.parseColor("#66BB6A") // 초록색
+                    batteryImage.colorFilter = PorterDuffColorFilter(blueColor, PorterDuff.Mode.SRC_ATOP)
+                } else if (batteryPercentage < 20) {
+                    val redColor = Color.parseColor("#D1180B")  // 빨간색
+                    batteryImage.colorFilter = PorterDuffColorFilter(redColor, PorterDuff.Mode.SRC_ATOP)
+                } else {
+                    batteryImage.colorFilter = null
+                }
             }
 
             override fun onErrorEvent(propId: Int, zone: Int) {
@@ -256,6 +267,27 @@ class CarActivity2 : AppCompatActivity() {
             }
         }, VehiclePropertyIds.EV_CHARGE_TIME_REMAINING, CarPropertyManager.SENSOR_RATE_NORMAL)
     }
+
+    // 충전 상태를 확인하는 함수
+    private fun isCharging(): Int {
+        return try {
+            val isCharging = mCarPropertyManager.getIntProperty(VehiclePropertyIds.EV_CHARGE_STATE, 0)
+            Log.d(TAG, "EV_CHARGE_STATE value: $isCharging")
+
+            when(isCharging) {
+                1 -> Log.d(TAG, "Charging status: Charging")
+                2 -> Log.d(TAG, "Charging status: Fully charged")
+                3 -> Log.d(TAG, "Charging status: Not charging")
+                else -> Log.d(TAG, "Charging status: Unknown value $isCharging")
+            }
+
+            isCharging
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to get charging status", e)
+            -1
+        }
+    }
+
 
     // 애니메이션 메서드
     private fun animateSpeedometerValue(speedometerValue: TextView, newValue: Float) {

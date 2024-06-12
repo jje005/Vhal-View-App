@@ -79,18 +79,35 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="0.2"
+            android:gravity="end">
 
-            <TextView
-                android:id="@+id/ev_battery_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/BackGroundColor2"
-                android:paddingHorizontal="10dp"
-                android:text="0"
-                android:textColor="@android:color/white"
-                android:textSize="70sp"
-                android:textStyle="bold" />
+            <FrameLayout
+                android:layout_width="150dp"
+                android:layout_height="150dp">
+
+                <ImageView
+                    android:id="@+id/battery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:src="@drawable/battery"
+                    app:tint="@color/gray" />
+
+                <TextView
+                    android:id="@+id/ev_battery_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:paddingHorizontal="10dp"
+                    android:text="0"
+                    android:textColor="@android:color/white"
+                    android:textSize="60sp"
+                    android:textStyle="bold" />
+
+            </FrameLayout>
+
         </LinearLayout>
 
     </LinearLayout>
