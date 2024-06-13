@@ -15,9 +15,20 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x Window/AndroidApp/car-api-hello-world/gradlew
+      
+    - name: Set environment variables
+      run: |
+        echo "ANDROID_HOME=/home/suresdv/Android/Sdk" >> $GITHUB_ENV
+        echo "ANDROID_SDK_ROOT=/home/suresdv/Android/Sdk" >> $GITHUB_ENV
+        echo "PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH" >> $GITHUB_ENV
+
+    - name: Verify environment variables
+      run: |
+        echo "ANDROID_HOME: $ANDROID_HOME"
+        echo "PATH: $PATH"
 
     - name: Build with Gradle
-      run: cd Window/AndroidApp/car-api-hello-world && ./gradlew build
+      run: cd Window/AndroidApp/car-api-hello-world && ./gradlew build --stacktrace --info
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
