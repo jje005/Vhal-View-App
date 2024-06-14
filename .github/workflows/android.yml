@@ -8,23 +8,27 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64]
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: gradle
-
     - name: Grant execute permission for gradlew
       run: chmod +x Window/AndroidApp/car-api-hello-world/gradlew
+      
+    - name: Set environment variables
+      run: |
+        echo "ANDROID_HOME=/home/suresdv/Android/Sdk" >> $GITHUB_ENV
+        echo "ANDROID_SDK_ROOT=/home/suresdv/Android/Sdk" >> $GITHUB_ENV
+        echo "PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH" >> $GITHUB_ENV
+
+    - name: Verify environment variables
+      run: |
+        echo "ANDROID_HOME: $ANDROID_HOME"
+        echo "PATH: $PATH"
 
     - name: Build with Gradle
-      run: cd Window/AndroidApp/car-api-hello-world && ./gradlew build
+      run: cd Window/AndroidApp/car-api-hello-world && ./gradlew build --stacktrace --info
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
@@ -32,33 +36,5 @@ jobs:
         name: app-debug-apk
         path: Window/AndroidApp/car-api-hello-world/app/build/outputs/apk/debug/app-debug.apk
 
-
-      
-# name: Android CI
-
-# on:
-#   push:
-#     branches: [ "main" ]
-#   pull_request:
-#     branches: [ "main" ]
-
-# jobs:
-#   build:
-
-#     runs-on: ubuntu-latest
-
-#     steps:
-#     - uses: actions/checkout@v4
-#     - name: set up JDK 11
-#       uses: actions/setup-java@v3
-#       with:
-#         java-version: '11'
-#         distribution: 'temurin'
-#         cache: gradle
-
-#     - name: Navigate to project directory
-#       run: cd Window/AndroidApp/car-api-hello-world
-
-
-#     - name: Build with Gradle
-#       run: ./gradlew build
+    - name: Copy APK to local directory
+      run: cp Window/AndroidApp/car-api-hello-world/app/build/outputs/apk/debug/app-debug.apk ~/apk/app-debug.apk
