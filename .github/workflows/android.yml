@@ -15,7 +15,7 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x Window/AndroidApp/car-api-hello-world/gradlew
-      
+
     - name: Set environment variables
       run: |
         echo "ANDROID_HOME=/home/suresdv/Android/Sdk" >> $GITHUB_ENV
@@ -28,7 +28,7 @@ jobs:
         echo "PATH: $PATH"
 
     - name: Build with Gradle
-      run: cd Window/AndroidApp/car-api-hello-world && ./gradlew build --stacktrace --info
+      run: cd Window/AndroidApp/car-api-hello-world && ./gradlew build
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
@@ -38,3 +38,23 @@ jobs:
 
     - name: Copy APK to local directory
       run: cp Window/AndroidApp/car-api-hello-world/app/build/outputs/apk/debug/app-debug.apk ~/apk/app-debug.apk
+
+    - name: Start Android Emulator
+      run: |
+        $ANDROID_HOME/emulator/emulator -avd Automotive_1080p_landscape_API_33 -no-window -no-audio -gpu off &
+
+    - name: Wait for emulator to start
+      run: adb wait-for-device
+
+    - name: Install APK on Emulator
+      run: adb install ~/apk/app-debug.apk
+
+    - name: Verify installed packages
+      run: adb shell pm list packages | grep "com.example"
+
+    - name: Start CarActivity2
+      run: adb shell am start -n com.example.carapihelloworld/.CarActivity2
+
+    - name: Stop Android Emulator
+      run: |
+        adb devices | grep emulator | cut -f1 | while read line; do adb -s $line emu kill; done
