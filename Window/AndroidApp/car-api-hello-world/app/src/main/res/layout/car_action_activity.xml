@@ -173,6 +173,13 @@
                 android:padding="5dp"
                 app:tint="@color/gray"
                 android:src="@drawable/ev_port_image" />
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="5dp"
+                app:tint="@color/gray"
+                android:src="@drawable/ev_port_image" />
 
         </LinearLayout>
 
