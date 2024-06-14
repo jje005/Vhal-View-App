@@ -44,7 +44,15 @@ jobs:
         $ANDROID_HOME/emulator/emulator -avd Automotive_1080p_landscape_API_33 -no-window -no-audio -gpu off &
 
     - name: Wait for emulator to start
-      run: adb wait-for-device
+      run: |
+        adb wait-for-device
+        boot_completed=""
+        while [ -z "$boot_completed" ]; do
+          boot_completed=$(adb shell getprop sys.boot_completed 2>&1 | tr -d '\r')
+          echo "Waiting for emulator to boot..."
+          sleep 5
+        done
+        echo "Emulator is ready."
 
     - name: Install APK on Emulator
       run: adb install ~/apk/app-debug.apk
