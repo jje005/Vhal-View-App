@@ -11,73 +11,77 @@ jobs:
     runs-on: [self-hosted, Linux, X64]
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x Window/AndroidApp/car-api-hello-world/gradlew
+    - name: Grant execute permission for gradlew
+      run: chmod +x Window/AndroidApp/car-api-hello-world/gradlew
 
-      - name: Set environment variables
-        run: |
-          echo "ANDROID_HOME=/home/suresdv/Android/Sdk" >> $GITHUB_ENV
-          echo "ANDROID_SDK_ROOT=/home/suresdv/Android/Sdk" >> $GITHUB_ENV
-          echo "PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH" >> $GITHUB_ENV
+    - name: Set environment variables
+      run: |
+        echo "ANDROID_HOME=/home/suresdv/Android/Sdk" >> $GITHUB_ENV
+        echo "ANDROID_SDK_ROOT=/home/suresdv/Android/Sdk" >> $GITHUB_ENV
+        echo "PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH" >> $GITHUB_ENV
 
-      - name: Verify environment variables
-        run: |
-          echo "ANDROID_HOME: $ANDROID_HOME"
-          echo "PATH: $PATH"
+    - name: Verify environment variables
+      run: |
+        echo "ANDROID_HOME: $ANDROID_HOME"
+        echo "PATH: $PATH"
 
-      - name: Build with Gradle
-        run: cd Window/AndroidApp/car-api-hello-world && ./gradlew build
+    - name: Build with Gradle
+      run: cd Window/AndroidApp/car-api-hello-world && ./gradlew build
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-debug-apk
-          path: Window/AndroidApp/car-api-hello-world/app/build/outputs/apk/debug/app-debug.apk
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-debug-apk
+        path: Window/AndroidApp/car-api-hello-world/app/build/outputs/apk/debug/app-debug.apk
 
-      - name: Copy APK to local directory
-        run: cp Window/AndroidApp/car-api-hello-world/app/build/outputs/apk/debug/app-debug.apk ~/apk/app-debug.apk
+    - name: Copy APK to local directory
+      run: cp Window/AndroidApp/car-api-hello-world/app/build/outputs/apk/debug/app-debug.apk ~/apk/app-debug.apk
 
-      - name: Start Android Emulator
-        run: |
-          $ANDROID_HOME/emulator/emulator -avd Automotive_1080p_landscape_API_33 -no-window -no-audio -gpu off &
+    - name: Start Android Emulator
+      run: |
+        $ANDROID_HOME/emulator/emulator -avd Automotive_1080p_landscape_API_33 -no-window -no-audio -gpu off &
 
-      - name: Wait for emulator to start
-        run: |
-          adb wait-for-device
-          boot_completed=""
-          while [ -z "$boot_completed" ]; do
-            boot_completed=$(adb shell getprop sys.boot_completed 2>&1 | tr -d '\r')
-            echo "Waiting for emulator to boot..."
-            sleep 5
-          done
-          echo "Emulator is ready."
+    - name: Wait for emulator to start
+      run: |
+        adb wait-for-device
+        boot_completed=""
+        while [ -z "$boot_completed" ]; do
+          boot_completed=$(adb shell getprop sys.boot_completed 2>&1 | tr -d '\r')
+          echo "Waiting for emulator to boot..."
+          sleep 5
+        done
+        echo "Emulator is ready."
 
-      - name: Install APK on Emulator
-        run: |
-          adb install -r ~/apk/app-debug.apk || echo "APK install failed"
+    - name: Install APK on Emulator
+      run: |
+        adb install -r ~/apk/app-debug.apk || echo "APK install failed"
 
-      - name: Capture ADB Install Log
-        run: adb logcat -d > adb_install_log.txt
+    - name: Capture ADB Install Log
+      run: adb logcat -d > adb_install_log.txt
 
-      - name: Verify installed packages
-        run: adb shell pm list packages | grep "com.example.carapihelloworld.debug"
+    - name: Verify installed packages
+      run: |
+        adb shell pm list packages > installed_packages.txt
+        cat installed_packages.txt
+        adb shell pm list packages | grep "com.example.carapihelloworld.debug"
 
-      - name: Start CarActivity2
-        run: adb shell am start -n com.example.carapihelloworld.debug/com.jyjang.carSpeed.CarActivity2
+    - name: Start CarActivity2
+      run: adb shell am start -n com.example.carapihelloworld.debug/com.jyjang.carSpeed.CarActivity2
 
-      - name: Capture Logcat Output
-        run: adb logcat -d > logcat_output.txt
+    - name: Capture Logcat Output
+      run: adb logcat -d > logcat_output.txt
 
-      - name: Upload Logcat and Install Logs
-        uses: actions/upload-artifact@v4
-        with:
-          name: logs
-          path: |
-            adb_install_log.txt
-            logcat_output.txt
+    - name: Upload Logcat and Install Logs
+      uses: actions/upload-artifact@v4
+      with:
+        name: logs
+        path: |
+          adb_install_log.txt
+          logcat_output.txt
+          installed_packages.txt
 
-      - name: Stop Android Emulator
-        run: |
-          adb devices | grep emulator | cut -f1 | while read line; do adb -s $line emu kill; done
+    - name: Stop Android Emulator
+      run: |
+        adb devices | grep emulator | cut -f1 | while read line; do adb -s $line emu kill; done
