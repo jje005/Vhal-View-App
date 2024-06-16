@@ -59,9 +59,18 @@ jobs:
 
     - name: Verify installed packages
       run: adb shell pm list packages | grep "com.example"
-
+      
     - name: Start CarActivity2
       run: adb shell am start -n com.example.carapihelloworld.debug/com.jyjang.carSpeed.CarActivity2
+
+    - name: Capture Logcat Output
+      run: adb logcat -d > logcat_output.txt
+
+    - name: Upload Logcat Output
+      uses: actions/upload-artifact@v4
+      with:
+        name: logcat-output
+        path: logcat_output.txt
 
     - name: Stop Android Emulator
       run: |
