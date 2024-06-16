@@ -57,30 +57,13 @@ jobs:
     - name: Install APK on Emulator
       run: |
         adb install -r ~/apk/app-debug.apk || echo "APK install failed"
-
-    - name: Capture ADB Install Log
-      run: adb logcat -d > adb_install_log.txt
-
+        
     - name: Verify installed packages
       run: |
-        adb shell pm list packages > installed_packages.txt
-        cat installed_packages.txt
         adb shell pm list packages | grep "com.example.carapihelloworld.debug"
 
     - name: Start CarActivity2
       run: adb shell am start -n com.example.carapihelloworld.debug/com.jyjang.carSpeed.CarActivity2
-
-    - name: Capture Logcat Output
-      run: adb logcat -d > logcat_output.txt
-
-    - name: Upload Logcat and Install Logs
-      uses: actions/upload-artifact@v4
-      with:
-        name: logs
-        path: |
-          adb_install_log.txt
-          logcat_output.txt
-          installed_packages.txt
 
     - name: Stop Android Emulator
       run: |
