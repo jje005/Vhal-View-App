@@ -8,13 +8,13 @@ import android.widget.BaseAdapter
 import android.widget.TextView
 import com.example.carapihelloworld.R
 
-class PropertyListAdapter (private val context: Context,  private val propertyList:  ArrayList<String>) : BaseAdapter() {
+class PropertyListAdapter (private val context: Context,  private val propertyIdList:  ArrayList<String>, private val propertyNameList:ArrayList<String> ) : BaseAdapter() {
     override fun getCount(): Int {
-        return propertyList.size
+        return propertyIdList.size
     }
 
     override fun getItem(position: Int): Any {
-        return propertyList[position]
+        return propertyIdList[position]
     }
 
     override fun getItemId(position: Int): Long {
@@ -23,10 +23,12 @@ class PropertyListAdapter (private val context: Context,  private val propertyLi
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view: View = convertView ?: LayoutInflater.from(context).inflate(R.layout.list_item_property, parent, false)
-        val propertyText = view.findViewById<TextView>(R.id.propertyText)
+        val propertyIdText = view.findViewById<TextView>(R.id.property_id_Text)
+        val propertyNameText = view.findViewById<TextView>(R.id.property_name_Text)
         val propertyNumber = view.findViewById<TextView>(R.id.propertyNumber)
 
-        propertyText.text = propertyList[position]
+        propertyIdText.text = propertyIdList[position]
+        propertyNameText.text = propertyNameList[position]
         propertyNumber.text = (position + 1).toString()
 
         return view

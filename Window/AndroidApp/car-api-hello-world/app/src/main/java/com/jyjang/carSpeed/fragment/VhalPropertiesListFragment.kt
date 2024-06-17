@@ -1,5 +1,6 @@
 package com.jyjang.carSpeed.fragment
 
+import android.car.VehiclePropertyIds
 import android.car.hardware.property.CarPropertyManager
 import android.os.Bundle
 import android.util.Log
@@ -17,7 +18,8 @@ import com.jyjang.carSpeed.model.CarPropertyManagerSingleton
 
 class VhalPropertiesListFragment : Fragment() {
     private lateinit var mCarPropertyManager: CarPropertyManager
-    private var propertiesList: ArrayList<String> = ArrayList()
+    private var propertyNameList: ArrayList<String> = ArrayList()
+    private var propertyIdList: ArrayList<String> = ArrayList()
     private lateinit var listView : ListView
     private lateinit var searchView: SearchView
 
@@ -47,11 +49,14 @@ class VhalPropertiesListFragment : Fragment() {
         }
 
         for (config in mCarPropertyManager.propertyList) {
-            Log.d(TAG, "Property :  " + config)
-            propertiesList.add(config.toString())
+            //PropertyId Name으로 추가하기
+            propertyNameList.add(VehiclePropertyIds.toString(config.propertyId))
+
+            //PropertyId id로 추가하기
+            propertyIdList.add(config.propertyId.toString())
         }
 
-        val propertyAdapter = PropertyListAdapter(requireContext(), propertiesList)
+        val propertyAdapter = PropertyListAdapter(requireContext(), propertyIdList, propertyNameList)
         listView.adapter = propertyAdapter
     }
 }
