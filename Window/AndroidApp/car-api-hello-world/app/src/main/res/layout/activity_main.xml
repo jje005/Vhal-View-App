@@ -5,18 +5,27 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="5dp">
+<!--    android:background="@color/BackGroundColor2"-->
 
-    -<com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_Table_View"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
         app:tabGravity="fill"
         app:tabMode="fixed"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/black"/>
+
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        />
 </LinearLayout>

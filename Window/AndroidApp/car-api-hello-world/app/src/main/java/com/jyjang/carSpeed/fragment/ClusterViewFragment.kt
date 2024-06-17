@@ -21,11 +21,15 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.example.carapihelloworld.R
 import com.github.anastr.speedviewlib.AwesomeSpeedometer
+import com.jyjang.carSpeed.model.CarPropertyManagerSingleton
 
 class ClusterViewFragment : Fragment() {
-    private val BLUE = Color.parseColor("#00BFFF") // 파란색
+    private val BLUE = Color.parseColor("#00BFFF") // 초록
+    private val GREEN = Color.parseColor("#66BB6A") // 초록
     private val YELLOW = Color.parseColor("#FFFF00")
     private val WHITE = Color.parseColor("#FFFFFF")
+    private val RED = Color.parseColor("#D1180B")  // 빨간색
+
 
     private lateinit var mCarPropertyManager: CarPropertyManager
 
@@ -39,7 +43,6 @@ class ClusterViewFragment : Fragment() {
     private lateinit var driveGearImage: TextView
     private lateinit var neutralGearImage: TextView
 
-    private lateinit var speedTextView: TextView
     private lateinit var ignitionTextView: TextView
 
     private lateinit var evBatteryTextView: TextView
@@ -82,7 +85,9 @@ class ClusterViewFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         main()
     }
-
+    private fun initCarPropertyManager() {
+        mCarPropertyManager =  CarPropertyManagerSingleton.getInstance(requireContext()).carPropertyManager
+    }
     private fun checkDangerousPermissions(): List<String> {
         val permissions = ArrayList<String>()
 
@@ -129,19 +134,8 @@ class ClusterViewFragment : Fragment() {
         requestPermissions(permissions.toTypedArray(), PERMISSION_REQUEST_CODE)
     }
 
-    private fun initCarPropertyManager() {
-        val mCar = Car.createCar(requireContext())
-        mCarPropertyManager = mCar.getCarManager(Car.PROPERTY_SERVICE) as CarPropertyManager
-    }
-
     private fun main() {
         initCarPropertyManager()
-
-        for (config in mCarPropertyManager.propertyList) {
-            Log.d(TAG, config.propertyId.toString())
-        }
-        Log.d(TAG, "CarPropertyConfig List Size : " + mCarPropertyManager.propertyList.size)
-
         registerCallback()
     }
 
@@ -253,11 +247,9 @@ class ClusterViewFragment : Fragment() {
 
                 // 배터리 수준에 따라 텍스트 및 이미지 색상 변경
                 if (isCharging() == 1) {
-                    val blueColor = Color.parseColor("#66BB6A") // 초록색
-                    batteryImage.colorFilter = PorterDuffColorFilter(blueColor, PorterDuff.Mode.SRC_ATOP)
+                    batteryImage.colorFilter = PorterDuffColorFilter(GREEN, PorterDuff.Mode.SRC_ATOP)
                 } else if (batteryPercentage < 20) {
-                    val redColor = Color.parseColor("#D1180B")  // 빨간색
-                    batteryImage.colorFilter = PorterDuffColorFilter(redColor, PorterDuff.Mode.SRC_ATOP)
+                    batteryImage.colorFilter = PorterDuffColorFilter(RED, PorterDuff.Mode.SRC_ATOP)
                 } else {
                     batteryImage.colorFilter = null
                 }
@@ -305,7 +297,7 @@ class ClusterViewFragment : Fragment() {
 
     private fun setImageViewPropValue(imageView: ImageView, value: Boolean) {
         if (value) {
-            imageView.colorFilter = PorterDuffColorFilter(YELLOW, PorterDuff.Mode.SRC_IN)
+            imageView.colorFilter = PorterDuffColorFilter(BLUE, PorterDuff.Mode.SRC_IN)
         } else {
             imageView.colorFilter = PorterDuffColorFilter(WHITE, PorterDuff.Mode.SRC_IN)
         }
