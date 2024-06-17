@@ -4,7 +4,6 @@ import android.Manifest
 import android.animation.ValueAnimator
 import android.car.Car
 import android.car.VehiclePropertyIds
-import android.car.hardware.CarPropertyConfig
 import android.car.hardware.CarPropertyValue
 import android.car.hardware.property.CarPropertyManager
 import android.content.pm.PackageManager
@@ -18,6 +17,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.carapihelloworld.R
 import com.github.anastr.speedviewlib.AwesomeSpeedometer
+import com.jyjang.carSpeed.model.CarPropertyManagerSingleton
 
 class CarActivity2 : AppCompatActivity() {
 
@@ -119,9 +119,7 @@ class CarActivity2 : AppCompatActivity() {
     }
 
     private fun initCarPropertyManager() {
-        val mCar = Car.createCar(this)
-
-        mCarPropertyManager = mCar.getCarManager(Car.PROPERTY_SERVICE) as CarPropertyManager
+        mCarPropertyManager = CarPropertyManagerSingleton.getInstance(this).carPropertyManager
     }
 
     private fun main() {
