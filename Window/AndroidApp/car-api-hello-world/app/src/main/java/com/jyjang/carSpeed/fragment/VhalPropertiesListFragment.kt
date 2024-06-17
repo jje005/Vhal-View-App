@@ -12,11 +12,12 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import com.example.carapihelloworld.R
 import com.example.carapihelloworld.R.*
+import com.jyjang.carSpeed.adapter.PropertyListAdapter
 import com.jyjang.carSpeed.model.CarPropertyManagerSingleton
 
 class VhalPropertiesListFragment : Fragment() {
     private lateinit var mCarPropertyManager: CarPropertyManager
-    private var propertiesList: ArrayList<Any> = ArrayList()
+    private var propertiesList: ArrayList<String> = ArrayList()
     private lateinit var listView : ListView
     private lateinit var searchView: SearchView
 
@@ -47,10 +48,10 @@ class VhalPropertiesListFragment : Fragment() {
 
         for (config in mCarPropertyManager.propertyList) {
             Log.d(TAG, "Property :  " + config)
-            propertiesList.add(config)
+            propertiesList.add(config.toString())
         }
 
-        val propertyAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, propertiesList)
+        val propertyAdapter = PropertyListAdapter(requireContext(), propertiesList)
         listView.adapter = propertyAdapter
     }
 }
