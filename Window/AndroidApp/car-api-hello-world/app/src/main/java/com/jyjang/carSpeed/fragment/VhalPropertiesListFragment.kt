@@ -22,7 +22,7 @@ class VhalPropertiesListFragment : Fragment() {
     private var propertyIdList: ArrayList<String> = ArrayList()
     private lateinit var listView : ListView
     private lateinit var searchView: SearchView
-
+    private lateinit var propertyAdapter: PropertyListAdapter
     companion object {
         private const val TAG = "VhalPropertiesListFragment"
         private const val PERMISSION_REQUEST_CODE = 100
@@ -56,7 +56,19 @@ class VhalPropertiesListFragment : Fragment() {
             propertyIdList.add(config.propertyId.toString())
         }
 
-        val propertyAdapter = PropertyListAdapter(requireContext(), propertyIdList, propertyNameList)
+        propertyAdapter = PropertyListAdapter(requireContext(), propertyIdList, propertyNameList)
         listView.adapter = propertyAdapter
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            //검색창 입력된 문자열 찾기
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+            //검색창 변경된 문자열 찾기
+            override fun onQueryTextChange(newText: String?): Boolean {
+                propertyAdapter.filter.filter(newText)
+                return false
+            }
+        })
     }
 }
