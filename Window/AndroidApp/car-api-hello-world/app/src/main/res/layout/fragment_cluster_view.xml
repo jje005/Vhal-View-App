@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="300"
     android:background="@color/BackGroundColor2"
-    >
+    android:orientation="vertical"
+    android:weightSum="300">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,10 +15,12 @@
         android:gravity="center"
         android:orientation="horizontal"
         android:weightSum="3">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1">
+
             <TextView
                 android:id="@+id/ev_charge_time_remaining"
                 android:layout_width="match_parent"
@@ -76,6 +77,7 @@
 
 
         </FrameLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -133,8 +135,8 @@
                 android:layout_weight="1"
                 android:background="@drawable/rounded_corner_white"
                 android:gravity="center"
-                android:text=""
                 android:padding="5dp"
+                android:text=""
                 android:textSize="30sp" />
 
             <ImageView
@@ -142,8 +144,8 @@
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@drawable/parking"
                 android:padding="5dp"
+                android:src="@drawable/parking"
                 app:tint="@color/gray"
                 tools:ignore="NestedWeights" />
 
@@ -152,8 +154,8 @@
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@drawable/ev_charge_image"
                 android:padding="5dp"
+                android:src="@drawable/ev_charge_image"
                 app:tint="@color/gray"
                 tools:ignore="NestedWeights" />
 
@@ -163,8 +165,15 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:padding="5dp"
+                android:src="@drawable/port_open"
+                app:tint="@color/gray" />
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="5dp"
                 app:tint="@color/gray"
-                android:src="@drawable/port_open" />
+                android:src="@drawable/ev_port_image" />
 
         </LinearLayout>
 
@@ -178,8 +187,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:weightSum="4"
-            >
+            android:weightSum="4">
 
             <TextView
                 android:id="@+id/park_gear_text"
@@ -224,6 +232,7 @@
                 android:text="@string/d"
                 android:textColor="@android:color/white"
                 android:textSize="62sp" />
+
         </LinearLayout>
     </LinearLayout>
-</LinearLayout >
+</LinearLayout>
