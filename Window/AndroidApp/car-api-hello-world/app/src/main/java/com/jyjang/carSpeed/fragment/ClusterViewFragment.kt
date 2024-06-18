@@ -128,7 +128,6 @@ class ClusterViewFragment : Fragment() {
             }
         }, VehiclePropertyIds.PARKING_BRAKE_AUTO_APPLY, CarPropertyManager.SENSOR_RATE_NORMAL)
 
-
         // GEAR_SELECTION
         mCarPropertyManager.registerCallback(object : CarPropertyManager.CarPropertyEventCallback {
             override fun onChangeEvent(carPropertyValue: CarPropertyValue<*>) {
@@ -142,8 +141,6 @@ class ClusterViewFragment : Fragment() {
                 Log.e(TAG, "Error event for property ID: $propId, zone: $zone")
             }
         }, VehiclePropertyIds.GEAR_SELECTION, CarPropertyManager.SENSOR_RATE_NORMAL)
-
-
 
         // PERCEIVED_SPEED
         mCarPropertyManager.registerCallback(object : CarPropertyManager.CarPropertyEventCallback {
