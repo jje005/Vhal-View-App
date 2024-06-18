@@ -43,16 +43,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.jyjang.carSpeed.CarActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <action android:name="androidx.car.app.CarAppService"/>
-                <category android:name="androidx.car.app.category.POI"/>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name="com.jyjang.carSpeed.MainActivity"
             android:exported="true">
             <intent-filter>
@@ -62,17 +52,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.jyjang.carSpeed.CarActivity2"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <action android:name="androidx.car.app.CarAppService"/>
-                <category android:name="androidx.car.app.category.POI"/>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
     </application>
 
 </manifest>
