@@ -30,7 +30,6 @@ class ClusterViewFragment : Fragment() {
     private val WHITE = Color.parseColor("#FFFFFF")
     private val RED = Color.parseColor("#D1180B")  // 빨간색
 
-
     private lateinit var mCarPropertyManager: CarPropertyManager
 
     private lateinit var chargePortConnectImage: ImageView
@@ -50,7 +49,6 @@ class ClusterViewFragment : Fragment() {
 
     companion object {
         private const val TAG = "ClusterViewFragment"
-        private const val PERMISSION_REQUEST_CODE = 100
     }
 
     override fun onCreateView(
@@ -74,69 +72,17 @@ class ClusterViewFragment : Fragment() {
         evBatteryTextView = view.findViewById(R.id.ev_battery_textview)
         evChargeTimeRemaining = view.findViewById(R.id.ev_charge_time_remaining)
 
-        val permissions = checkDangerousPermissions()
-        requestDangerousPermissions(permissions)
-
         return view
     }
 
     @Deprecated("Deprecated in Java")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        main()
+        initCarPropertyManager()
+        registerCallback()
     }
     private fun initCarPropertyManager() {
         mCarPropertyManager =  CarPropertyManagerSingleton.getInstance(requireContext()).carPropertyManager
-    }
-    private fun checkDangerousPermissions(): List<String> {
-        val permissions = ArrayList<String>()
-
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_SECURE_SETTINGS) != PackageManager.PERMISSION_GRANTED) {
-            permissions.add(Manifest.permission.WRITE_SECURE_SETTINGS)
-        }
-
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.SET_DEBUG_APP) != PackageManager.PERMISSION_GRANTED) {
-            permissions.add(Manifest.permission.SET_DEBUG_APP)
-        }
-
-        if (ActivityCompat.checkSelfPermission(requireContext(), Car.PERMISSION_CAR_INFO) != PackageManager.PERMISSION_GRANTED) {
-            permissions.add(Car.PERMISSION_CAR_INFO)
-        }
-
-        if (ActivityCompat.checkSelfPermission(requireContext(), Car.PERMISSION_CONTROL_DISPLAY_UNITS) != PackageManager.PERMISSION_GRANTED) {
-            permissions.add(Car.PERMISSION_CONTROL_DISPLAY_UNITS)
-        }
-
-        if (ActivityCompat.checkSelfPermission(requireContext(), Car.PERMISSION_POWERTRAIN) != PackageManager.PERMISSION_GRANTED) {
-            permissions.add(Car.PERMISSION_POWERTRAIN)
-        }
-
-        if (ActivityCompat.checkSelfPermission(requireContext(), Car.PERMISSION_READ_DISPLAY_UNITS) != PackageManager.PERMISSION_GRANTED) {
-            permissions.add(Car.PERMISSION_READ_DISPLAY_UNITS)
-        }
-
-        if (ActivityCompat.checkSelfPermission(requireContext(), Car.PERMISSION_SPEED) != PackageManager.PERMISSION_GRANTED) {
-            permissions.add(Car.PERMISSION_SPEED)
-        }
-
-        if (ActivityCompat.checkSelfPermission(requireContext(), Car.PERMISSION_USE_REMOTE_ACCESS) != PackageManager.PERMISSION_GRANTED) {
-            permissions.add(Car.PERMISSION_USE_REMOTE_ACCESS)
-        }
-
-        if (ActivityCompat.checkSelfPermission(requireContext(), Car.PERMISSION_ENERGY) != PackageManager.PERMISSION_GRANTED) {
-            permissions.add(Car.PERMISSION_ENERGY)
-        }
-
-        return permissions
-    }
-
-    private fun requestDangerousPermissions(permissions: List<String>) {
-        requestPermissions(permissions.toTypedArray(), PERMISSION_REQUEST_CODE)
-    }
-
-    private fun main() {
-        initCarPropertyManager()
-        registerCallback()
     }
 
     private fun registerCallback() {
@@ -270,7 +216,7 @@ class ClusterViewFragment : Fragment() {
         }
 
         val animator = ValueAnimator.ofFloat(currentSpeed, newValue)
-        animator.duration = 1000 // 애니메이션 지속 시간 (밀리초)
+        animator.duration = 500 // 애니메이션 지속 시간 (밀리초)
         animator.addUpdateListener { animation ->
             val animatedValue = animation.animatedValue as Float
             speedometerValue.text = String.format("%.0f", animatedValue)
