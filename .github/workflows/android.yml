@@ -41,7 +41,7 @@ jobs:
 
     - name: Start Android Emulator
       run: |
-        $ANDROID_HOME/emulator/emulator -avd Automotive_1080p_landscape_API_33
+        $ANDROID_HOME/emulator/emulator -avd Automotive_1080p_landscape_API_33 &
 
     - name: Wait for emulator to start
       run: |
