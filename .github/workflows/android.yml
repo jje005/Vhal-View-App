@@ -62,8 +62,8 @@ jobs:
       run: |
         adb shell pm list packages | grep "com.example.carapihelloworld.debug"
 
-    - name: Start CarActivity2
-      run: adb shell am start -n com.example.carapihelloworld.debug/com.jyjang.carSpeed.CarActivity2
+    - name: Start MainActivity
+      run: adb shell am start -n com.example.carapihelloworld.debug/com.jyjang.carSpeed.MainActivity
 
     - name: Stop Android Emulator
       run: |
