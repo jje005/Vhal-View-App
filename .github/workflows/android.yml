@@ -37,11 +37,11 @@ jobs:
         path: Window/AndroidApp/car-api-hello-world/app/build/outputs/apk/debug/app-debug.apk
 
     - name: Copy APK to local directory
-      run: cp Window/AndroidApp/car-api-hello-world/app/build/outputs/apk/debug/app-debug.apk ~/apk/app-debug.apk
+      run: mkdir -p ~/apk && cp Window/AndroidApp/car-api-hello-world/app/build/outputs/apk/debug/app-debug.apk ~/apk/app-debug.apk
 
     - name: Start Android Emulator
       run: |
-        $ANDROID_HOME/emulator/emulator -avd Automotive_1080p_landscape_API_33 -no-window -no-audio -gpu off &
+        $ANDROID_HOME/emulator/emulator -avd Automotive_1080p_landscape_API_33 &
 
     - name: Wait for emulator to start
       run: |
@@ -54,10 +54,13 @@ jobs:
         done
         echo "Emulator is ready."
 
+    - name: Create Snapshot
+      run: adb emu avd snapshot save default_boot
+
     - name: Install APK on Emulator
       run: |
         adb install -r ~/apk/app-debug.apk || echo "APK install failed"
-        
+
     - name: Verify installed packages
       run: |
         adb shell pm list packages | grep "com.example.carapihelloworld.debug"
