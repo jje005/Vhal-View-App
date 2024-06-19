@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build-and-upload:
     runs-on: [self-hosted, Linux, X64]
 
     steps:
@@ -39,6 +39,22 @@ jobs:
     - name: Copy APK to local directory
       run: mkdir -p ~/apk && cp Window/AndroidApp/car-api-hello-world/app/build/outputs/apk/debug/app-debug.apk ~/apk/app-debug.apk
 
+  emulator-and-test:
+    runs-on: [self-hosted, Linux, X64]
+    needs: build-and-upload
+
+    steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: app-debug-apk
+        path: ~/apk
+
+    - name: Set environment variables
+      run: |
+        echo "ANDROID_HOME=/home/suresdv/Android/Sdk" >> $GITHUB_ENV
+        echo "ANDROID_SDK_ROOT=/home/suresdv/Android/Sdk" >> $GITHUB_ENV
+        echo "PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH" >> $GITHUB_ENV
+
     - name: Start Android Emulator
       run: |
         $ANDROID_HOME/emulator/emulator -avd Automotive_1080p_landscape_API_33 &
@@ -69,7 +85,9 @@ jobs:
       run: adb emu avd snapshot save default_boot
       
     - name: Fix Snapshot Permissions
-      run: chmod -R 755 ~/.android/avd/Automotive_1080p_landscape_API_33_2.avd/snapshots/default_boot
+      run: |
+        chmod -R 755 ~/.android/avd/Automotive_1080p_landscape_API_33_2.avd/snapshots
+        chmod -R 755 ~/.android/avd/Automotive_1080p_landscape_API_33_2.avd/snapshots/default_boot
       
     - name: Stop Android Emulator
       run: |
