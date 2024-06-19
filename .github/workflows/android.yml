@@ -54,6 +54,9 @@ jobs:
         done
         echo "Emulator is ready."
 
+    - name: Create Snapshot
+      run: adb emu avd snapshot save default_boot
+
     - name: Install APK on Emulator
       run: |
         adb install -r ~/apk/app-debug.apk || echo "APK install failed"
