@@ -70,6 +70,11 @@ jobs:
         done
         echo "Emulator is ready."
 
+    - name: Fix Snapshot Permissions
+      run: |
+        chmod -R 755 ~/.android/avd/Automotive_1080p_landscape_API_33_2.avd/snapshots
+        chmod -R 755 ~/.android/avd/Automotive_1080p_landscape_API_33_2.avd/snapshots/default_boot
+
     - name: Install APK on Emulator
       run: |
         adb install -r ~/apk/app-debug.apk || echo "APK install failed"
@@ -80,15 +85,12 @@ jobs:
 
     - name: Start MainActivity
       run: adb shell am start -n com.example.carapihelloworld.debug/com.jyjang.carSpeed.MainActivity
-      
+
     - name: Create Snapshot
-      run: adb emu avd snapshot save default_boot
-      
-    - name: Fix Snapshot Permissions
       run: |
-        chmod -R 755 ~/.android/avd/Automotive_1080p_landscape_API_33_2.avd/snapshots
-        chmod -R 755 ~/.android/avd/Automotive_1080p_landscape_API_33_2.avd/snapshots/default_boot
-      
+        adb emu avd snapshot save default_boot
+        adb shell chmod -R 755 /cache
+
     - name: Stop Android Emulator
       run: |
         adb devices | grep emulator | cut -f1 | while read line; do adb -s $line emu kill; done
