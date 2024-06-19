@@ -2,9 +2,9 @@ name: Android CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build-and-upload:
@@ -57,7 +57,7 @@ jobs:
 
     - name: Start Android Emulator
       run: |
-        $ANDROID_HOME/emulator/emulator -avd Automotive_1080p_landscape_API_33 &
+        sudo $ANDROID_HOME/emulator/emulator -avd Automotive_1080p_landscape_API_33 &
 
     - name: Wait for emulator to start
       run: |
@@ -69,11 +69,6 @@ jobs:
           sleep 5
         done
         echo "Emulator is ready."
-
-    - name: Fix Snapshot Permissions
-      run: |
-        chmod -R 755 ~/.android/avd/Automotive_1080p_landscape_API_33_2.avd/snapshots
-        chmod -R 755 ~/.android/avd/Automotive_1080p_landscape_API_33_2.avd/snapshots/default_boot
 
     - name: Install APK on Emulator
       run: |
@@ -89,7 +84,12 @@ jobs:
     - name: Create Snapshot
       run: |
         adb emu avd snapshot save default_boot
-        adb shell chmod -R 755 /cache
+
+    - name: Fix Snapshot Permissions
+      run: |
+        sudo chmod -R 755 ~/.android/avd/Automotive_1080p_landscape_API_33_2.avd/snapshots
+        sudo chmod -R 755 ~/.android/avd/Automotive_1080p_landscape_API_33_2.avd/snapshots/default_boot
+        sudo chmod -R 755 /cache
 
     - name: Stop Android Emulator
       run: |
