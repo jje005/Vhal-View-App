@@ -85,12 +85,6 @@ jobs:
       run: |
         adb emu avd snapshot save default_boot
 
-    - name: Fix Snapshot Permissions
-      run: |
-        sudo chmod -R 755 ~/.android/avd/Automotive_1080p_landscape_API_33_2.avd/snapshots
-        sudo chmod -R 755 ~/.android/avd/Automotive_1080p_landscape_API_33_2.avd/snapshots/default_boot
-        sudo chmod -R 755 /cache
-
     - name: Stop Android Emulator
       run: |
         adb devices | grep emulator | cut -f1 | while read line; do adb -s $line emu kill; done
